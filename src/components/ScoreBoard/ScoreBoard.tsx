@@ -27,26 +27,26 @@ export function ScoreBoard({ scores, gameMode, difficulty }: ScoreBoardProps) {
     <div role="region" aria-label="Score board" className="w-full">
       <div className="text-center mb-3">
         <h2 className="text-lg font-bold text-slate-800">Score</h2>
-        <p className="text-sm text-slate-500">{subtitle}</p>
+        <p className="text-sm text-slate-600">{subtitle}</p>
       </div>
       <div className="grid grid-cols-3 gap-3">
         <div className="flex flex-col items-center bg-blue-50 rounded-xl p-3">
-          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">
+          <span className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1">
             X Wins
           </span>
-          <span className="text-3xl font-bold text-blue-700">{record.X}</span>
+          <span className="text-2xl sm:text-3xl font-bold text-blue-700">{record.X}</span>
         </div>
         <div className="flex flex-col items-center bg-slate-50 rounded-xl p-3">
-          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">
+          <span className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1">
             Draws
           </span>
-          <span className="text-3xl font-bold text-slate-500">{record.draw}</span>
+          <span className="text-2xl sm:text-3xl font-bold text-slate-500">{record.draw}</span>
         </div>
         <div className="flex flex-col items-center bg-red-50 rounded-xl p-3">
-          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">
+          <span className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1">
             {oLabel} Wins
           </span>
-          <span className="text-3xl font-bold text-red-700">{record.O}</span>
+          <span className="text-2xl sm:text-3xl font-bold text-red-700">{record.O}</span>
         </div>
       </div>
     </div>

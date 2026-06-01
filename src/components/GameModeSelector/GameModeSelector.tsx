@@ -25,7 +25,7 @@ export function GameModeSelector({ gameMode, onChange }: GameModeSelectorProps) 
                 onChange(option.value)
               }
             }}
-            className={`flex-1 py-2 px-3 rounded-lg text-sm font-semibold border transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 outline-none ${
+            className={`flex-1 py-2 px-2 sm:px-3 rounded-lg text-xs sm:text-sm font-semibold border transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 outline-none ${
               isSelected
                 ? 'bg-indigo-600 text-white border-indigo-600'
                 : 'bg-white text-slate-600 border-slate-300 hover:border-indigo-400 hover:text-indigo-600'

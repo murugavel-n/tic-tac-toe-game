@@ -34,7 +34,7 @@ function App() {
   return (
     <main className="min-h-screen bg-slate-800 flex flex-col items-center justify-center p-4">
       <h1 className="text-4xl font-bold text-white mb-8">Tic Tac Toe</h1>
-      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md flex flex-col gap-4">
+      <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-8 w-full max-w-md flex flex-col gap-4">
         <GameModeSelector gameMode={gameMode} onChange={setGameMode} />
         <DifficultySelector
           difficulty={difficulty}
