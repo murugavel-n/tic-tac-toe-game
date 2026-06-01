@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [['list'], ['junit', { outputFile: 'test-results/playwright-junit.xml' }]],
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: 'http://localhost:1111',
     trace: 'on-first-retry',
   },
   projects: [
@@ -19,7 +19,7 @@ export default defineConfig({
   ],
   webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:5173',
+    url: 'http://localhost:1111',
     reuseExistingServer: !process.env.CI,
   },
 })
