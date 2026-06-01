@@ -1,14 +1,9 @@
 import { describe, it, expect } from 'vitest'
-import {
-  calculateWinner,
-  isDraw,
-  getAIMove,
-  type Board,
-} from './gameLogic'
+import { calculateWinner, isDraw, getAIMove, type Board } from './gameLogic'
 
 // Helper to create a board from a string pattern (9 chars: X/O/.)
 function makeBoard(pattern: string): Board {
-  return pattern.split('').map(c => (c === 'X' ? 'X' : c === 'O' ? 'O' : null)) as Board
+  return pattern.split('').map((c) => (c === 'X' ? 'X' : c === 'O' ? 'O' : null)) as Board
 }
 
 const EMPTY_BOARD: Board = Array(9).fill(null)

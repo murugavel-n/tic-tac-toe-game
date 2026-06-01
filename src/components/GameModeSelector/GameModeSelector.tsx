@@ -11,7 +11,7 @@ const options: { value: 'pvp' | 'pva'; label: string }[] = [
 export function GameModeSelector({ gameMode, onChange }: GameModeSelectorProps) {
   return (
     <div role="radiogroup" aria-label="Game mode" className="flex gap-2 w-full">
-      {options.map(option => {
+      {options.map((option) => {
         const isSelected = gameMode === option.value
         return (
           <button
@@ -19,7 +19,7 @@ export function GameModeSelector({ gameMode, onChange }: GameModeSelectorProps) 
             role="radio"
             aria-checked={isSelected}
             onClick={() => onChange(option.value)}
-            onKeyDown={e => {
+            onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault()
                 onChange(option.value)

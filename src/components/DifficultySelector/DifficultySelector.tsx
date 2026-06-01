@@ -8,7 +8,11 @@ interface DifficultySelectorProps {
 
 const options: { value: Difficulty; label: string; selectedClass: string }[] = [
   { value: 'easy', label: 'Easy', selectedClass: 'bg-green-600 text-white border-green-600' },
-  { value: 'medium', label: 'Medium', selectedClass: 'bg-yellow-400 text-slate-900 border-yellow-400' },
+  {
+    value: 'medium',
+    label: 'Medium',
+    selectedClass: 'bg-yellow-400 text-slate-900 border-yellow-400',
+  },
   { value: 'hard', label: 'Hard', selectedClass: 'bg-red-600 text-white border-red-600' },
 ]
 
@@ -19,7 +23,7 @@ export function DifficultySelector({ difficulty, onChange, disabled }: Difficult
 
   return (
     <div role="radiogroup" aria-label="AI difficulty" className="flex gap-2 w-full">
-      {options.map(option => {
+      {options.map((option) => {
         const isSelected = difficulty === option.value
         return (
           <button
@@ -27,7 +31,7 @@ export function DifficultySelector({ difficulty, onChange, disabled }: Difficult
             role="radio"
             aria-checked={isSelected}
             onClick={() => onChange(option.value)}
-            onKeyDown={e => {
+            onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault()
                 onChange(option.value)

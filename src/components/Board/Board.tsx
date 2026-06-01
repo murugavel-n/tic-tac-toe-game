@@ -13,9 +13,9 @@ export function Board({ board, winningLine, onCellClick, disabled }: BoardProps)
 
   return (
     <div role="grid" aria-label="Tic Tac Toe board" className="grid grid-cols-3 gap-2">
-      {rows.map(row => (
+      {rows.map((row) => (
         <div key={row} role="row" className="contents">
-          {[0, 1, 2].map(col => {
+          {[0, 1, 2].map((col) => {
             const index = row * 3 + col
             return (
               <Cell

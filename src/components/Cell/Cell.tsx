@@ -22,8 +22,7 @@ export function Cell({ value, index, isWinning, onClick, disabled }: CellProps) 
         ? 'border-slate-200 hover:bg-slate-100 cursor-pointer'
         : 'border-slate-200'
 
-  const valueClasses =
-    value === 'X' ? 'text-blue-700' : value === 'O' ? 'text-red-700' : ''
+  const valueClasses = value === 'X' ? 'text-blue-700' : value === 'O' ? 'text-red-700' : ''
 
   return (
     <button

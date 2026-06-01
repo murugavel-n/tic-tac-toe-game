@@ -32,13 +32,7 @@ export function loadScores(): Scores {
     if (raw === null) return defaultScores()
     const parsed = JSON.parse(raw) as Scores
     // Validate required keys exist
-    if (
-      !parsed.pvp ||
-      !parsed.pva ||
-      !parsed.pva.easy ||
-      !parsed.pva.medium ||
-      !parsed.pva.hard
-    ) {
+    if (!parsed.pvp || !parsed.pva || !parsed.pva.easy || !parsed.pva.medium || !parsed.pva.hard) {
       return defaultScores()
     }
     return parsed

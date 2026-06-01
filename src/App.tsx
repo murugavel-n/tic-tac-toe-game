@@ -26,10 +26,7 @@ function App() {
   const winResult = calculateWinner(board)
   const winningLine = winResult?.line ?? null
 
-  const boardDisabled =
-    winner !== null ||
-    isDraw ||
-    (gameMode === 'pva' && currentPlayer === 'O')
+  const boardDisabled = winner !== null || isDraw || (gameMode === 'pva' && currentPlayer === 'O')
 
   return (
     <main className="min-h-screen bg-slate-800 flex flex-col items-center justify-center p-4">

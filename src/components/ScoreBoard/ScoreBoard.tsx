@@ -17,9 +17,7 @@ export function ScoreBoard({ scores, gameMode, difficulty }: ScoreBoardProps) {
   }
 
   const subtitle =
-    gameMode === 'pvp'
-      ? 'Player vs Player'
-      : `Player vs AI · ${difficultyLabel[difficulty]}`
+    gameMode === 'pvp' ? 'Player vs Player' : `Player vs AI · ${difficultyLabel[difficulty]}`
 
   const oLabel = gameMode === 'pva' ? 'AI' : 'O'
 

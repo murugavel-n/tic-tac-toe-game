@@ -8,9 +8,7 @@ interface GameStatusProps {
 export function GameStatus({ currentPlayer, winner, isDraw, gameMode }: GameStatusProps) {
   const isAiThinking = gameMode === 'pva' && currentPlayer === 'O' && !winner && !isDraw
 
-  const turnText = isAiThinking
-    ? 'AI is thinking...'
-    : `Player ${currentPlayer}'s turn`
+  const turnText = isAiThinking ? 'AI is thinking...' : `Player ${currentPlayer}'s turn`
 
   let resultText = ''
   if (winner) {
@@ -24,27 +22,18 @@ export function GameStatus({ currentPlayer, winner, isDraw, gameMode }: GameStat
   }
 
   const turnColorClass = currentPlayer === 'X' ? 'text-blue-700' : 'text-red-700'
-  const resultColorClass = winner === 'X'
-    ? 'text-blue-700'
-    : winner === 'O'
-      ? 'text-red-700'
-      : 'text-slate-500'
+  const resultColorClass =
+    winner === 'X' ? 'text-blue-700' : winner === 'O' ? 'text-red-700' : 'text-slate-500'
 
   return (
     <div className="text-center py-2">
       {!winner && !isDraw && (
-        <p
-          aria-live="polite"
-          className={`text-xl font-semibold ${turnColorClass}`}
-        >
+        <p aria-live="polite" className={`text-xl font-semibold ${turnColorClass}`}>
           {turnText}
         </p>
       )}
       {(winner || isDraw) && (
-        <p
-          aria-live="assertive"
-          className={`text-xl font-semibold ${resultColorClass}`}
-        >
+        <p aria-live="assertive" className={`text-xl font-semibold ${resultColorClass}`}>
           {resultText}
         </p>
       )}

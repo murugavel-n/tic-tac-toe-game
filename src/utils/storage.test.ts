@@ -87,7 +87,9 @@ describe('saveScores / loadScores roundtrip', () => {
 describe('loadScores with simulated localStorage errors', () => {
   it('returns defaultScores() when localStorage.getItem throws', () => {
     const mockStorage = {
-      getItem: vi.fn(() => { throw new Error('storage error') }),
+      getItem: vi.fn(() => {
+        throw new Error('storage error')
+      }),
       setItem: vi.fn(),
       removeItem: vi.fn(),
       clear: vi.fn(),

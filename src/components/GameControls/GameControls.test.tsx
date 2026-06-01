@@ -46,9 +46,7 @@ describe('GameControls', () => {
 
   describe('Accessibility (axe)', () => {
     it('passes axe', async () => {
-      const { container } = render(
-        <GameControls onNewGame={vi.fn()} onResetScores={vi.fn()} />
-      )
+      const { container } = render(<GameControls onNewGame={vi.fn()} onResetScores={vi.fn()} />)
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })

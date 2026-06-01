@@ -1,12 +1,17 @@
 export type Player = 'X' | 'O'
 export type Cell = Player | null
-export type Board = Cell[]  // length 9, indices 0-8 (row-major)
+export type Board = Cell[] // length 9, indices 0-8 (row-major)
 export type Difficulty = 'easy' | 'medium' | 'hard'
 
 const WIN_LINES = [
-  [0,1,2],[3,4,5],[6,7,8], // rows
-  [0,3,6],[1,4,7],[2,5,8], // cols
-  [0,4,8],[2,4,6],          // diagonals
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8], // rows
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8], // cols
+  [0, 4, 8],
+  [2, 4, 6], // diagonals
 ]
 
 export function calculateWinner(board: Board): { winner: Player; line: number[] } | null {
@@ -21,7 +26,7 @@ export function calculateWinner(board: Board): { winner: Player; line: number[] 
 
 export function isDraw(board: Board): boolean {
   if (calculateWinner(board) !== null) return false
-  return board.every(cell => cell !== null)
+  return board.every((cell) => cell !== null)
 }
 
 export function getEmptyCells(board: Board): number[] {
@@ -57,7 +62,7 @@ export function getAIMove(board: Board, difficulty: Difficulty): number {
     if (board[4] === null) return 4
 
     // 4. Prefer corners
-    const corners = [0, 2, 6, 8].filter(i => board[i] === null)
+    const corners = [0, 2, 6, 8].filter((i) => board[i] === null)
     if (corners.length > 0) return corners[Math.floor(Math.random() * corners.length)]
 
     // 5. Random
@@ -85,7 +90,13 @@ function minimaxMove(board: Board): number {
   return bestMove
 }
 
-function minimax(board: Board, depth: number, isMaximizing: boolean, alpha: number, beta: number): number {
+function minimax(
+  board: Board,
+  depth: number,
+  isMaximizing: boolean,
+  alpha: number,
+  beta: number
+): number {
   const result = calculateWinner(board)
   if (result !== null) {
     return result.winner === 'O' ? 10 - depth : -10 + depth

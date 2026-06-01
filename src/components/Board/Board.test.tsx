@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
 import { Board } from './Board'
@@ -11,31 +11,23 @@ const emptyBoard: BoardType = Array(9).fill(null)
 describe('Board', () => {
   describe('Rendering', () => {
     it('renders exactly 9 Cell buttons', () => {
-      render(
-        <Board board={emptyBoard} winningLine={null} onCellClick={vi.fn()} disabled={false} />
-      )
+      render(<Board board={emptyBoard} winningLine={null} onCellClick={vi.fn()} disabled={false} />)
       expect(screen.getAllByRole('gridcell')).toHaveLength(9)
     })
 
     it('has role="grid" with aria-label="Tic Tac Toe board"', () => {
-      render(
-        <Board board={emptyBoard} winningLine={null} onCellClick={vi.fn()} disabled={false} />
-      )
+      render(<Board board={emptyBoard} winningLine={null} onCellClick={vi.fn()} disabled={false} />)
       expect(screen.getByRole('grid', { name: 'Tic Tac Toe board' })).toBeInTheDocument()
     })
 
     it('renders 3 elements with role="row"', () => {
-      render(
-        <Board board={emptyBoard} winningLine={null} onCellClick={vi.fn()} disabled={false} />
-      )
+      render(<Board board={emptyBoard} winningLine={null} onCellClick={vi.fn()} disabled={false} />)
       expect(screen.getAllByRole('row')).toHaveLength(3)
     })
 
     it('renders correct cell values from board prop', () => {
       const board: BoardType = ['X', 'O', null, null, 'X', null, 'O', null, null]
-      render(
-        <Board board={board} winningLine={null} onCellClick={vi.fn()} disabled={false} />
-      )
+      render(<Board board={board} winningLine={null} onCellClick={vi.fn()} disabled={false} />)
       const cells = screen.getAllByRole('gridcell')
       expect(cells[0]).toHaveTextContent('X')
       expect(cells[1]).toHaveTextContent('O')
@@ -48,9 +40,7 @@ describe('Board', () => {
   describe('Winning line', () => {
     it('cells in winningLine get isWinning=true (bg-yellow-200 class)', () => {
       const board: BoardType = ['X', 'X', 'X', null, null, null, null, null, null]
-      render(
-        <Board board={board} winningLine={[0, 1, 2]} onCellClick={vi.fn()} disabled={false} />
-      )
+      render(<Board board={board} winningLine={[0, 1, 2]} onCellClick={vi.fn()} disabled={false} />)
       const cells = screen.getAllByRole('gridcell')
       expect(cells[0].className).toContain('bg-yellow-200')
       expect(cells[1].className).toContain('bg-yellow-200')
@@ -59,9 +49,7 @@ describe('Board', () => {
 
     it('cells not in winningLine do not get winning class', () => {
       const board: BoardType = ['X', 'X', 'X', null, null, null, null, null, null]
-      render(
-        <Board board={board} winningLine={[0, 1, 2]} onCellClick={vi.fn()} disabled={false} />
-      )
+      render(<Board board={board} winningLine={[0, 1, 2]} onCellClick={vi.fn()} disabled={false} />)
       const cells = screen.getAllByRole('gridcell')
       expect(cells[3].className).not.toContain('bg-yellow-200')
       expect(cells[4].className).not.toContain('bg-yellow-200')

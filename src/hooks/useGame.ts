@@ -91,14 +91,14 @@ export function useGame(): UseGameReturn {
 
       if (winResult) {
         setWinner(winResult.winner)
-        setScores(prev => {
+        setScores((prev) => {
           const updated = updateScores(prev, winResult.winner, false, gameMode, difficulty)
           saveScores(updated)
           return updated
         })
       } else if (drawResult) {
         setIsDraw(true)
-        setScores(prev => {
+        setScores((prev) => {
           const updated = updateScores(prev, null, true, gameMode, difficulty)
           saveScores(updated)
           return updated
@@ -130,14 +130,14 @@ export function useGame(): UseGameReturn {
 
       if (winResult) {
         setWinner(winResult.winner)
-        setScores(prev => {
+        setScores((prev) => {
           const updated = updateScores(prev, winResult.winner, false, gameMode, difficulty)
           saveScores(updated)
           return updated
         })
       } else if (drawResult) {
         setIsDraw(true)
-        setScores(prev => {
+        setScores((prev) => {
           const updated = updateScores(prev, null, true, gameMode, difficulty)
           saveScores(updated)
           return updated
@@ -163,27 +163,21 @@ export function useGame(): UseGameReturn {
     saveScores(zeroed)
   }, [])
 
-  const setGameMode = useCallback(
-    (mode: 'pvp' | 'pva') => {
-      setGameModeState(mode)
-      setBoard(Array(9).fill(null))
-      setCurrentPlayer('X')
-      setWinner(null)
-      setIsDraw(false)
-    },
-    []
-  )
+  const setGameMode = useCallback((mode: 'pvp' | 'pva') => {
+    setGameModeState(mode)
+    setBoard(Array(9).fill(null))
+    setCurrentPlayer('X')
+    setWinner(null)
+    setIsDraw(false)
+  }, [])
 
-  const setDifficulty = useCallback(
-    (newDifficulty: Difficulty) => {
-      setDifficultyState(newDifficulty)
-      setBoard(Array(9).fill(null))
-      setCurrentPlayer('X')
-      setWinner(null)
-      setIsDraw(false)
-    },
-    []
-  )
+  const setDifficulty = useCallback((newDifficulty: Difficulty) => {
+    setDifficultyState(newDifficulty)
+    setBoard(Array(9).fill(null))
+    setCurrentPlayer('X')
+    setWinner(null)
+    setIsDraw(false)
+  }, [])
 
   return {
     board,
