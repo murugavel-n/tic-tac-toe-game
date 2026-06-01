@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest'
 import {
   calculateWinner,
   isDraw,
-  getEmptyCells,
   getAIMove,
   type Board,
 } from './gameLogic'
@@ -75,8 +74,7 @@ describe('calculateWinner', () => {
   })
 
   it('detects diagonal [2,4,6] win for X', () => {
-    const board = makeBoard('OO.X.X...')  // need X at 2,4,6
-    // Build manually
+    // Build manually — X at 2,4,6
     const b: Board = [null, null, 'X', null, 'X', null, 'X', null, null]
     const result = calculateWinner(b)
     expect(result?.winner).toBe('X')

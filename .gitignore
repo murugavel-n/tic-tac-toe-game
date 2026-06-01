@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Test output
+test-results/
+playwright-report/
+coverage/
+
+# Environment
+.env
+.env.*
+*.local
+
+# TypeScript
+*.tsbuildinfo
+
+# OS
+.DS_Store
+
+# Logs
+*.log
+
+# Editor
+.idea/
+.vscode/
+*.sw?
