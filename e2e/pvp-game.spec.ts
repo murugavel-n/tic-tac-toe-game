@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { startPvpGame } from './helpers'
 
 async function clickCell(page: any, row: number, col: number) {
   await page.getByRole('gridcell', { name: new RegExp(`Row ${row}, Column ${col}`) }).click()
@@ -6,6 +7,7 @@ async function clickCell(page: any, row: number, col: number) {
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
+  await startPvpGame(page)
 })
 
 test('X wins on top row', async ({ page }) => {
@@ -16,7 +18,7 @@ test('X wins on top row', async ({ page }) => {
   await clickCell(page, 2, 2)
   await clickCell(page, 1, 3)
 
-  await expect(page.getByText(/Player X wins/)).toBeVisible()
+  await expect(page.getByText(/Player 1 wins/)).toBeVisible()
 
   // Check winning highlight on top row cells
   const cell11 = page.getByRole('gridcell', { name: /Row 1, Column 1/ })
@@ -35,7 +37,7 @@ test('X wins on left column', async ({ page }) => {
   await clickCell(page, 1, 3)
   await clickCell(page, 3, 1)
 
-  await expect(page.getByText(/Player X wins/)).toBeVisible()
+  await expect(page.getByText(/Player 1 wins/)).toBeVisible()
 })
 
 test('X wins on diagonal', async ({ page }) => {
@@ -46,7 +48,7 @@ test('X wins on diagonal', async ({ page }) => {
   await clickCell(page, 1, 3)
   await clickCell(page, 3, 3)
 
-  await expect(page.getByText(/Player X wins/)).toBeVisible()
+  await expect(page.getByText(/Player 1 wins/)).toBeVisible()
 })
 
 test('O wins', async ({ page }) => {
@@ -58,14 +60,11 @@ test('O wins', async ({ page }) => {
   await clickCell(page, 3, 3)
   await clickCell(page, 2, 3)
 
-  await expect(page.getByText(/Player O wins/)).toBeVisible()
+  await expect(page.getByText(/Player 2 wins/)).toBeVisible()
 })
 
 test('Draw game', async ({ page }) => {
   // Fill board with no winner:
-  // Board indices: 0(1,1) 1(1,2) 2(1,3) / 3(2,1) 4(2,2) 5(2,3) / 6(3,1) 7(3,2) 8(3,3)
-  // X at: 0,2,4,6,8 => indices 0,2,4,6,8
-  // O at: 1,3,5,7   => indices 1,3,5,7
   // Play order: (1,1)X, (1,2)O, (1,3)X, (2,1)O, (2,3)X, (2,2)O, (3,1)X, (3,3)O, (3,2)X
   await clickCell(page, 1, 1) // X index 0
   await clickCell(page, 1, 2) // O index 1
@@ -81,16 +80,16 @@ test('Draw game', async ({ page }) => {
 })
 
 test('Status updates after moves', async ({ page }) => {
-  // Initially X's turn
-  await expect(page.getByText(/Player X's turn/)).toBeVisible()
+  // Initially Player 1's turn
+  await expect(page.getByText(/Player 1's turn/)).toBeVisible()
 
-  // After X plays, it should be O's turn
+  // After X plays, it should be Player 2's turn
   await clickCell(page, 1, 1)
-  await expect(page.getByText(/Player O's turn/)).toBeVisible()
+  await expect(page.getByText(/Player 2's turn/)).toBeVisible()
 
-  // After O plays, it should be X's turn again
+  // After O plays, it should be Player 1's turn again
   await clickCell(page, 2, 2)
-  await expect(page.getByText(/Player X's turn/)).toBeVisible()
+  await expect(page.getByText(/Player 1's turn/)).toBeVisible()
 })
 
 test('New Game resets board', async ({ page }) => {
@@ -112,10 +111,10 @@ test('Cannot click filled cell', async ({ page }) => {
   // The game logic should ignore clicks on filled cells
   await page.getByRole('gridcell', { name: /Row 1, Column 1/ }).click({ force: true })
 
-  // The cell should still show X (not O) — aria-label should say "X"
+  // The cell should still show X — aria-label should say "X"
   const cell = page.getByRole('gridcell', { name: /Row 1, Column 1/ })
   await expect(cell).toHaveAttribute('aria-label', 'Row 1, Column 1, X')
 
-  // The turn should now be O (only one move was counted)
-  await expect(page.getByText(/Player O's turn/)).toBeVisible()
+  // The turn should now be Player 2's (only one move was counted)
+  await expect(page.getByText(/Player 2's turn/)).toBeVisible()
 })

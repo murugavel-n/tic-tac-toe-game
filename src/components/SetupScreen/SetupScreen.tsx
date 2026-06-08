@@ -93,7 +93,7 @@ export function SetupScreen({ onStart }: SetupScreenProps) {
                 className={`py-3 px-4 rounded-xl text-sm font-semibold border-2 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 outline-none
                   ${mode === m ? 'bg-indigo-600 text-white border-indigo-600 shadow-md' : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-300 hover:text-indigo-600'}`}
               >
-                {m === 'pvp' ? '👥 Player vs Player' : '🤖 Player vs Computer'}
+                {m === 'pvp' ? '👥 Player vs Player' : 'Player vs AI'}
               </button>
             ))}
           </div>
