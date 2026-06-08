@@ -57,13 +57,23 @@ function GameView({ setup, onChangeSetup }: { setup: GameSetup; onChangeSetup: (
   useEffect(() => {
     if (!winner) return
     const { fire, remove } = createConfetti()
-    fire({ particleCount: 120, spread: 70, origin: { y: 0.6 } }).then(remove)
+    if (fire) {
+      const p = fire({ particleCount: 120, spread: 70, origin: { y: 0.6 } })
+      if (p) p.then(remove)
+      else remove()
+    } else {
+      remove()
+    }
   }, [winner])
 
   useEffect(() => {
     if (!seriesOver || !seriesWinner || seriesConfettiFiredRef.current) return
     seriesConfettiFiredRef.current = true
     const { fire, remove } = createConfetti()
+    if (!fire) {
+      remove()
+      return
+    }
     const end = Date.now() + 2500
     const burst = () => {
       fire({ particleCount: 60, angle: 60, spread: 55, origin: { x: 0 } })
