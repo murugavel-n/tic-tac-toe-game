@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { startPvpGame } from './helpers'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
@@ -46,6 +47,9 @@ test('Can select game mode with keyboard', async ({ page }) => {
 })
 
 test('Can play a full game with keyboard only', async ({ page }) => {
+  // Start the game first (click Start Game button)
+  await startPvpGame(page)
+
   // Tab through the interface until we reach board cells
   await page.evaluate(() => (document.body as HTMLElement).focus())
 
@@ -83,6 +87,9 @@ test('Can play a full game with keyboard only', async ({ page }) => {
 })
 
 test('Focus visible on cells', async ({ page }) => {
+  // Start the game first
+  await startPvpGame(page)
+
   // Focus a cell and verify focus ring styles are present
   const cell = page.getByRole('gridcell', { name: /Row 1, Column 1/ })
   await cell.focus()
@@ -97,6 +104,9 @@ test('Focus visible on cells', async ({ page }) => {
 })
 
 test('New Game button keyboard', async ({ page }) => {
+  // Start the game first
+  await startPvpGame(page)
+
   // Play a move first
   await page.getByRole('gridcell', { name: /Row 1, Column 1/ }).click()
 

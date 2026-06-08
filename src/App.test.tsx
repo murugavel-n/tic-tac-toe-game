@@ -2,8 +2,28 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
 import App from './App'
+import type { GameSetup } from './utils/storage'
 
 expect.extend(toHaveNoViolations)
+
+const defaultSetup: GameSetup = {
+  mode: 'pvp',
+  player1: { name: 'Player 1', symbol: 'X' },
+  player2: { name: 'Player 2', symbol: 'O' },
+  difficulty: 'easy',
+}
+
+vi.mock('./utils/storage', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('./utils/storage')>()
+  return {
+    ...actual,
+    loadSetup: vi.fn(() => defaultSetup),
+    saveSetup: vi.fn(),
+    clearSetup: vi.fn(),
+    loadScores: vi.fn(() => actual.defaultScores()),
+    saveScores: vi.fn(),
+  }
+})
 
 vi.mock('./hooks/useGame', () => ({
   useGame: () => ({
@@ -11,26 +31,22 @@ vi.mock('./hooks/useGame', () => ({
     currentPlayer: 'X' as const,
     winner: null,
     isDraw: false,
-    gameMode: 'pvp' as const,
-    difficulty: 'easy' as const,
+    setup: defaultSetup,
     scores: {
       pvp: { X: 0, O: 0, draw: 0 },
       pva: {
         easy: { X: 0, O: 0, draw: 0 },
-        medium: { X: 0, O: 0, draw: 0 },
         hard: { X: 0, O: 0, draw: 0 },
       },
     },
     handleCellClick: vi.fn(),
     startNewGame: vi.fn(),
     resetScores: vi.fn(),
-    setGameMode: vi.fn(),
-    setDifficulty: vi.fn(),
   }),
 }))
 
 describe('App', () => {
-  describe('Renders key elements', () => {
+  describe('Game view (setup already saved)', () => {
     it('shows "Tic Tac Toe" heading', () => {
       render(<App />)
       expect(screen.getByRole('heading', { name: 'Tic Tac Toe' })).toBeInTheDocument()
@@ -44,16 +60,6 @@ describe('App', () => {
     it('renders score board (role="region")', () => {
       render(<App />)
       expect(screen.getByRole('region', { name: 'Score board' })).toBeInTheDocument()
-    })
-
-    it('renders game mode selector (role="radiogroup")', () => {
-      render(<App />)
-      expect(screen.getByRole('radiogroup', { name: 'Game mode' })).toBeInTheDocument()
-    })
-
-    it('DifficultySelector is hidden when gameMode is pvp', () => {
-      render(<App />)
-      expect(screen.queryByRole('radiogroup', { name: 'AI difficulty' })).not.toBeInTheDocument()
     })
   })
 

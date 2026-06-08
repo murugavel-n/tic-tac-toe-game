@@ -15,9 +15,9 @@ describe('DifficultySelector', () => {
       expect(hiddenDiv).toHaveClass('hidden')
     })
 
-    it('renders all 3 options when disabled=false', () => {
+    it('renders 2 options when disabled=false', () => {
       render(<DifficultySelector difficulty="easy" onChange={vi.fn()} disabled={false} />)
-      expect(screen.getAllByRole('radio')).toHaveLength(3)
+      expect(screen.getAllByRole('radio')).toHaveLength(2)
     })
   })
 
@@ -30,27 +30,21 @@ describe('DifficultySelector', () => {
     it('each option has role="radio"', () => {
       render(<DifficultySelector difficulty="easy" onChange={vi.fn()} disabled={false} />)
       const radios = screen.getAllByRole('radio')
-      expect(radios).toHaveLength(3)
+      expect(radios).toHaveLength(2)
       expect(screen.getByRole('radio', { name: 'Easy' })).toBeInTheDocument()
-      expect(screen.getByRole('radio', { name: 'Medium' })).toBeInTheDocument()
       expect(screen.getByRole('radio', { name: 'Hard' })).toBeInTheDocument()
     })
 
     it('correct option has aria-checked="true" for easy', () => {
       render(<DifficultySelector difficulty="easy" onChange={vi.fn()} disabled={false} />)
       expect(screen.getByRole('radio', { name: 'Easy' })).toHaveAttribute('aria-checked', 'true')
-      expect(screen.getByRole('radio', { name: 'Medium' })).toHaveAttribute('aria-checked', 'false')
       expect(screen.getByRole('radio', { name: 'Hard' })).toHaveAttribute('aria-checked', 'false')
-    })
-
-    it('correct option has aria-checked="true" for medium', () => {
-      render(<DifficultySelector difficulty="medium" onChange={vi.fn()} disabled={false} />)
-      expect(screen.getByRole('radio', { name: 'Medium' })).toHaveAttribute('aria-checked', 'true')
     })
 
     it('correct option has aria-checked="true" for hard', () => {
       render(<DifficultySelector difficulty="hard" onChange={vi.fn()} disabled={false} />)
       expect(screen.getByRole('radio', { name: 'Hard' })).toHaveAttribute('aria-checked', 'true')
+      expect(screen.getByRole('radio', { name: 'Easy' })).toHaveAttribute('aria-checked', 'false')
     })
   })
 
@@ -65,8 +59,8 @@ describe('DifficultySelector', () => {
     it('pressing Enter on option calls onChange', () => {
       const onChange = vi.fn()
       render(<DifficultySelector difficulty="easy" onChange={onChange} disabled={false} />)
-      fireEvent.keyDown(screen.getByRole('radio', { name: 'Medium' }), { key: 'Enter' })
-      expect(onChange).toHaveBeenCalledWith('medium')
+      fireEvent.keyDown(screen.getByRole('radio', { name: 'Hard' }), { key: 'Enter' })
+      expect(onChange).toHaveBeenCalledWith('hard')
     })
 
     it('pressing Space on option calls onChange', () => {
@@ -81,14 +75,6 @@ describe('DifficultySelector', () => {
     it('easy selected passes axe', async () => {
       const { container } = render(
         <DifficultySelector difficulty="easy" onChange={vi.fn()} disabled={false} />
-      )
-      const results = await axe(container)
-      expect(results).toHaveNoViolations()
-    })
-
-    it('medium selected passes axe', async () => {
-      const { container } = render(
-        <DifficultySelector difficulty="medium" onChange={vi.fn()} disabled={false} />
       )
       const results = await axe(container)
       expect(results).toHaveNoViolations()

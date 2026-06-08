@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
+import { startPvpGame, startPvaGame } from './helpers'
 
 async function clickCell(page: any, row: number, col: number) {
   await page.getByRole('gridcell', { name: new RegExp(`Row ${row}, Column ${col}`) }).click()
@@ -16,6 +17,7 @@ test('Initial setup screen passes axe', async ({ page }) => {
 test('Mid-game board passes axe', async ({ page }) => {
   await page.goto('/')
   await page.waitForLoadState('networkidle')
+  await startPvpGame(page)
 
   await clickCell(page, 1, 1)
   await clickCell(page, 2, 2)
@@ -27,6 +29,7 @@ test('Mid-game board passes axe', async ({ page }) => {
 test('Win state passes axe', async ({ page }) => {
   await page.goto('/')
   await page.waitForLoadState('networkidle')
+  await startPvpGame(page)
 
   // X wins top row: (1,1), (2,1), (1,2), (2,2), (1,3)
   await clickCell(page, 1, 1)
@@ -35,7 +38,7 @@ test('Win state passes axe', async ({ page }) => {
   await clickCell(page, 2, 2)
   await clickCell(page, 1, 3)
 
-  await expect(page.getByText(/Player X wins/)).toBeVisible()
+  await expect(page.getByText(/Player 1 wins/)).toBeVisible()
 
   const results = await new AxeBuilder({ page }).analyze()
   expect(results.violations).toEqual([])
@@ -44,6 +47,7 @@ test('Win state passes axe', async ({ page }) => {
 test('Draw state passes axe', async ({ page }) => {
   await page.goto('/')
   await page.waitForLoadState('networkidle')
+  await startPvpGame(page)
 
   // Draw sequence
   await clickCell(page, 1, 1)
@@ -65,8 +69,7 @@ test('Draw state passes axe', async ({ page }) => {
 test('PvA mode passes axe', async ({ page }) => {
   await page.goto('/')
   await page.waitForLoadState('networkidle')
-
-  await page.getByRole('radio', { name: 'Player vs AI' }).click()
+  await startPvaGame(page)
 
   // Disable color-contrast rule as axe can miscompute contrast for adjacent
   // flex elements when Tailwind hover classes are present in the DOM
@@ -79,8 +82,7 @@ test('PvA mode passes axe', async ({ page }) => {
 test('PvA mid-game passes axe', async ({ page }) => {
   await page.goto('/')
   await page.waitForLoadState('networkidle')
-
-  await page.getByRole('radio', { name: 'Player vs AI' }).click()
+  await startPvaGame(page)
 
   await clickCell(page, 2, 2)
   await page.waitForTimeout(500)

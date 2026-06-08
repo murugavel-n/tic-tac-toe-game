@@ -10,7 +10,6 @@ describe('defaultScores', () => {
     const scores = defaultScores()
     expect(scores.pvp).toEqual({ X: 0, O: 0, draw: 0 })
     expect(scores.pva.easy).toEqual({ X: 0, O: 0, draw: 0 })
-    expect(scores.pva.medium).toEqual({ X: 0, O: 0, draw: 0 })
     expect(scores.pva.hard).toEqual({ X: 0, O: 0, draw: 0 })
   })
 
@@ -47,7 +46,6 @@ describe('loadScores', () => {
       pvp: { X: 3, O: 1, draw: 2 },
       pva: {
         easy: { X: 5, O: 2, draw: 1 },
-        medium: { X: 0, O: 4, draw: 3 },
         hard: { X: 1, O: 7, draw: 0 },
       },
     }
@@ -63,7 +61,6 @@ describe('saveScores / loadScores roundtrip', () => {
     scores.pvp.O = 3
     scores.pvp.draw = 1
     scores.pva.hard.O = 10
-    scores.pva.medium.draw = 2
 
     saveScores(scores)
     const loaded = loadScores()

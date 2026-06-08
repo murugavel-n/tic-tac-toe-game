@@ -1,12 +1,14 @@
 interface CellProps {
-  value: 'X' | 'O' | null
+  value: string | null
   index: number
   isWinning: boolean
   onClick: () => void
   disabled: boolean
+  /** The symbol used by player 1 (X slot) — for colour decisions */
+  p1Symbol: string
 }
 
-export function Cell({ value, index, isWinning, onClick, disabled }: CellProps) {
+export function Cell({ value, index, isWinning, onClick, disabled, p1Symbol }: CellProps) {
   const row = Math.floor(index / 3) + 1
   const col = (index % 3) + 1
   const ariaLabel = `Row ${row}, Column ${col}, ${value ?? 'empty'}`
@@ -22,7 +24,8 @@ export function Cell({ value, index, isWinning, onClick, disabled }: CellProps) 
         ? 'border-slate-200 hover:bg-slate-100 cursor-pointer'
         : 'border-slate-200'
 
-  const valueClasses = value === 'X' ? 'text-blue-700' : value === 'O' ? 'text-red-700' : ''
+  const isP1 = value !== null && value === p1Symbol
+  const valueClasses = value === null ? '' : isP1 ? 'text-blue-700' : 'text-red-700'
 
   return (
     <button

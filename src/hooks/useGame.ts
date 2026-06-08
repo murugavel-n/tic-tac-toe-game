@@ -1,46 +1,34 @@
 import { useState, useEffect, useCallback } from 'react'
-import {
-  Board,
-  Player,
-  Difficulty,
-  calculateWinner,
-  isDraw as checkDraw,
-  getAIMove,
-} from '../utils/gameLogic'
-import { Scores, loadScores, saveScores, defaultScores } from '../utils/storage'
+import { Board, Player, calculateWinner, isDraw as checkDraw, getAIMove } from '../utils/gameLogic'
+import { Scores, GameSetup, loadScores, saveScores, defaultScores } from '../utils/storage'
 
 export interface UseGameReturn {
   board: Board
   currentPlayer: Player
   winner: Player | null
   isDraw: boolean
-  gameMode: 'pvp' | 'pva'
-  difficulty: Difficulty
   scores: Scores
+  setup: GameSetup
   handleCellClick: (index: number) => void
   startNewGame: () => void
   resetScores: () => void
-  setGameMode: (mode: 'pvp' | 'pva') => void
-  setDifficulty: (difficulty: Difficulty) => void
 }
 
 function updateScores(
   scores: Scores,
   winner: Player | null,
   draw: boolean,
-  gameMode: 'pvp' | 'pva',
-  difficulty: Difficulty
+  setup: GameSetup
 ): Scores {
   const newScores: Scores = {
     pvp: { ...scores.pvp },
     pva: {
       easy: { ...scores.pva.easy },
-      medium: { ...scores.pva.medium },
       hard: { ...scores.pva.hard },
     },
   }
 
-  if (gameMode === 'pvp') {
+  if (setup.mode === 'pvp') {
     if (draw) {
       newScores.pvp.draw += 1
     } else if (winner === 'X') {
@@ -50,24 +38,22 @@ function updateScores(
     }
   } else {
     if (draw) {
-      newScores.pva[difficulty].draw += 1
+      newScores.pva[setup.difficulty].draw += 1
     } else if (winner === 'X') {
-      newScores.pva[difficulty].X += 1
+      newScores.pva[setup.difficulty].X += 1
     } else if (winner === 'O') {
-      newScores.pva[difficulty].O += 1
+      newScores.pva[setup.difficulty].O += 1
     }
   }
 
   return newScores
 }
 
-export function useGame(): UseGameReturn {
+export function useGame(setup: GameSetup): UseGameReturn {
   const [board, setBoard] = useState<Board>(Array(9).fill(null))
   const [currentPlayer, setCurrentPlayer] = useState<Player>('X')
   const [winner, setWinner] = useState<Player | null>(null)
   const [isDraw, setIsDraw] = useState(false)
-  const [gameMode, setGameModeState] = useState<'pvp' | 'pva'>('pvp')
-  const [difficulty, setDifficultyState] = useState<Difficulty>('easy')
   const [scores, setScores] = useState<Scores>(() => loadScores())
 
   const handleCellClick = useCallback(
@@ -76,7 +62,7 @@ export function useGame(): UseGameReturn {
         board[index] !== null ||
         winner !== null ||
         isDraw ||
-        (gameMode === 'pva' && currentPlayer !== 'X')
+        (setup.mode === 'pva' && currentPlayer !== 'X')
       ) {
         return
       }
@@ -92,14 +78,14 @@ export function useGame(): UseGameReturn {
       if (winResult) {
         setWinner(winResult.winner)
         setScores((prev) => {
-          const updated = updateScores(prev, winResult.winner, false, gameMode, difficulty)
+          const updated = updateScores(prev, winResult.winner, false, setup)
           saveScores(updated)
           return updated
         })
       } else if (drawResult) {
         setIsDraw(true)
         setScores((prev) => {
-          const updated = updateScores(prev, null, true, gameMode, difficulty)
+          const updated = updateScores(prev, null, true, setup)
           saveScores(updated)
           return updated
         })
@@ -107,17 +93,17 @@ export function useGame(): UseGameReturn {
         setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X')
       }
     },
-    [board, currentPlayer, winner, isDraw, gameMode, difficulty]
+    [board, currentPlayer, winner, isDraw, setup]
   )
 
   // AI move effect
   useEffect(() => {
-    if (gameMode !== 'pva') return
+    if (setup.mode !== 'pva') return
     if (currentPlayer !== 'O') return
     if (winner !== null || isDraw) return
 
     const timeoutId = setTimeout(() => {
-      const aiIndex = getAIMove(board, difficulty)
+      const aiIndex = getAIMove(board, setup.difficulty)
       if (aiIndex === undefined || aiIndex === -1) return
 
       const newBoard = [...board] as Board
@@ -131,14 +117,14 @@ export function useGame(): UseGameReturn {
       if (winResult) {
         setWinner(winResult.winner)
         setScores((prev) => {
-          const updated = updateScores(prev, winResult.winner, false, gameMode, difficulty)
+          const updated = updateScores(prev, winResult.winner, false, setup)
           saveScores(updated)
           return updated
         })
       } else if (drawResult) {
         setIsDraw(true)
         setScores((prev) => {
-          const updated = updateScores(prev, null, true, gameMode, difficulty)
+          const updated = updateScores(prev, null, true, setup)
           saveScores(updated)
           return updated
         })
@@ -148,7 +134,7 @@ export function useGame(): UseGameReturn {
     }, 300)
 
     return () => clearTimeout(timeoutId)
-  }, [board, currentPlayer, gameMode, difficulty, winner, isDraw])
+  }, [board, currentPlayer, setup, winner, isDraw])
 
   const startNewGame = useCallback(() => {
     setBoard(Array(9).fill(null))
@@ -163,34 +149,15 @@ export function useGame(): UseGameReturn {
     saveScores(zeroed)
   }, [])
 
-  const setGameMode = useCallback((mode: 'pvp' | 'pva') => {
-    setGameModeState(mode)
-    setBoard(Array(9).fill(null))
-    setCurrentPlayer('X')
-    setWinner(null)
-    setIsDraw(false)
-  }, [])
-
-  const setDifficulty = useCallback((newDifficulty: Difficulty) => {
-    setDifficultyState(newDifficulty)
-    setBoard(Array(9).fill(null))
-    setCurrentPlayer('X')
-    setWinner(null)
-    setIsDraw(false)
-  }, [])
-
   return {
     board,
     currentPlayer,
     winner,
     isDraw,
-    gameMode,
-    difficulty,
     scores,
+    setup,
     handleCellClick,
     startNewGame,
     resetScores,
-    setGameMode,
-    setDifficulty,
   }
 }
