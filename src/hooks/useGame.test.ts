@@ -8,10 +8,7 @@ vi.mock('../utils/storage', () => ({
   saveScores: vi.fn(),
   defaultScores: () => ({
     pvp: { X: 0, O: 0, draw: 0 },
-    pva: {
-      easy: { X: 0, O: 0, draw: 0 },
-      hard: { X: 0, O: 0, draw: 0 },
-    },
+    pva: { X: 0, O: 0, draw: 0 },
   }),
 }))
 
@@ -22,14 +19,12 @@ const pvpSetup: GameSetup = {
   mode: 'pvp',
   player1: { name: 'Alice', symbol: 'X' },
   player2: { name: 'Bob', symbol: 'O' },
-  difficulty: 'easy',
 }
 
 const pvaSetup: GameSetup = {
   mode: 'pva',
   player1: { name: 'Alice', symbol: 'X' },
   player2: { name: 'Computer', symbol: 'O' },
-  difficulty: 'easy',
 }
 
 describe('useGame', () => {
@@ -50,10 +45,9 @@ describe('useGame', () => {
       expect(result.current.isDraw).toBe(false)
     })
 
-    it('setup reflects passed-in mode and difficulty', () => {
+    it('setup reflects passed-in mode', () => {
       const { result } = renderHook(() => useGame(pvpSetup))
       expect(result.current.setup.mode).toBe('pvp')
-      expect(result.current.setup.difficulty).toBe('easy')
     })
 
     it('scores loaded from loadScores()', () => {
@@ -147,10 +141,6 @@ describe('useGame', () => {
     it('draw sets isDraw correctly', () => {
       const { result } = renderHook(() => useGame(pvpSetup))
 
-      // Draw sequence:
-      // X O X
-      // X X O
-      // O X O
       act(() => {
         result.current.handleCellClick(0)
       }) // X
@@ -275,7 +265,7 @@ describe('useGame', () => {
       expect(result.current.currentPlayer).toBe('O')
     })
 
-    it('after advancing fake timers by 300ms, AI places O on the board', () => {
+    it('after advancing fake timers by 300ms, computer places O on the board', () => {
       const { result } = renderHook(() => useGame(pvaSetup))
 
       act(() => {
@@ -298,13 +288,11 @@ describe('useGame', () => {
         result.current.handleCellClick(0)
       })
 
-      // currentPlayer is now O — human should not be able to place
       const boardBeforeClick = [...result.current.board]
       act(() => {
         result.current.handleCellClick(1)
       })
 
-      // Board should be unchanged (AI hasn't moved yet either since timer not advanced)
       expect(result.current.board).toEqual(boardBeforeClick)
     })
   })

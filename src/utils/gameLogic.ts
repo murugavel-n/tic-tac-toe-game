@@ -1,7 +1,6 @@
 export type Player = 'X' | 'O'
 export type Cell = Player | null
 export type Board = Cell[] // length 9, indices 0-8 (row-major)
-export type Difficulty = 'easy' | 'hard'
 
 const WIN_LINES = [
   [0, 1, 2],
@@ -36,15 +35,13 @@ export function getEmptyCells(board: Board): number[] {
   }, [])
 }
 
-export function getAIMove(board: Board, difficulty: Difficulty): number {
+export function getComputerMove(board: Board): number {
   const emptyCells = getEmptyCells(board)
-
-  if (difficulty === 'easy') {
-    return emptyCells[Math.floor(Math.random() * emptyCells.length)]
+  // Randomly alternate between genius (minimax) and dumb (random) play
+  if (Math.random() < 0.5) {
+    return minimaxMove(board)
   }
-
-  // hard: minimax with alpha-beta pruning
-  return minimaxMove(board)
+  return emptyCells[Math.floor(Math.random() * emptyCells.length)]
 }
 
 function minimaxMove(board: Board): number {

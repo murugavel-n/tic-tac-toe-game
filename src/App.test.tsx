@@ -10,7 +10,6 @@ const defaultSetup: GameSetup = {
   mode: 'pvp',
   player1: { name: 'Player 1', symbol: 'X' },
   player2: { name: 'Player 2', symbol: 'O' },
-  difficulty: 'easy',
 }
 
 vi.mock('./utils/storage', async (importOriginal) => {
@@ -34,10 +33,7 @@ vi.mock('./hooks/useGame', () => ({
     setup: defaultSetup,
     scores: {
       pvp: { X: 0, O: 0, draw: 0 },
-      pva: {
-        easy: { X: 0, O: 0, draw: 0 },
-        hard: { X: 0, O: 0, draw: 0 },
-      },
+      pva: { X: 0, O: 0, draw: 0 },
     },
     handleCellClick: vi.fn(),
     startNewGame: vi.fn(),

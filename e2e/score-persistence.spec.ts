@@ -91,23 +91,16 @@ test('Reset Score persists after reload', async ({ page }) => {
   await expect(scoreBoard.getByText('0', { exact: true }).first()).toBeVisible()
 })
 
-test('PvA scores tracked separately from PvP', async ({ page }) => {
+test('Change Setup resets scores to zero', async ({ page }) => {
   // Record a PvP win first (score = 1)
   await playXWin(page)
 
   const scoreBoard = page.getByRole('region', { name: /score board/i })
   await expect(scoreBoard.getByText('1', { exact: true })).toBeVisible()
 
-  // Switch to PvA via Change Setup
+  // Change setup — scores should reset
   await changeSetupToPva(page)
 
-  // PvA score should be 0 (separate from PvP)
   await expect(scoreBoard.getByText('1', { exact: true })).toHaveCount(0)
   await expect(scoreBoard.getByText('0', { exact: true }).first()).toBeVisible()
-
-  // Switch back to PvP via Change Setup
-  await changeSetupToPvp(page)
-
-  // PvP score should still be 1
-  await expect(scoreBoard.getByText('1', { exact: true })).toBeVisible()
 })

@@ -1,5 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Board, Player, calculateWinner, isDraw as checkDraw, getAIMove } from '../utils/gameLogic'
+import {
+  Board,
+  Player,
+  calculateWinner,
+  isDraw as checkDraw,
+  getComputerMove,
+} from '../utils/gameLogic'
 import { Scores, GameSetup, loadScores, saveScores, defaultScores } from '../utils/storage'
 
 export interface UseGameReturn {
@@ -22,28 +28,17 @@ function updateScores(
 ): Scores {
   const newScores: Scores = {
     pvp: { ...scores.pvp },
-    pva: {
-      easy: { ...scores.pva.easy },
-      hard: { ...scores.pva.hard },
-    },
+    pva: { ...scores.pva },
   }
 
-  if (setup.mode === 'pvp') {
-    if (draw) {
-      newScores.pvp.draw += 1
-    } else if (winner === 'X') {
-      newScores.pvp.X += 1
-    } else if (winner === 'O') {
-      newScores.pvp.O += 1
-    }
-  } else {
-    if (draw) {
-      newScores.pva[setup.difficulty].draw += 1
-    } else if (winner === 'X') {
-      newScores.pva[setup.difficulty].X += 1
-    } else if (winner === 'O') {
-      newScores.pva[setup.difficulty].O += 1
-    }
+  const record = setup.mode === 'pvp' ? newScores.pvp : newScores.pva
+
+  if (draw) {
+    record.draw += 1
+  } else if (winner === 'X') {
+    record.X += 1
+  } else if (winner === 'O') {
+    record.O += 1
   }
 
   return newScores
@@ -96,18 +91,18 @@ export function useGame(setup: GameSetup): UseGameReturn {
     [board, currentPlayer, winner, isDraw, setup]
   )
 
-  // AI move effect
+  // Computer move effect
   useEffect(() => {
     if (setup.mode !== 'pva') return
     if (currentPlayer !== 'O') return
     if (winner !== null || isDraw) return
 
     const timeoutId = setTimeout(() => {
-      const aiIndex = getAIMove(board, setup.difficulty)
-      if (aiIndex === undefined || aiIndex === -1) return
+      const idx = getComputerMove(board)
+      if (idx === undefined || idx === -1) return
 
       const newBoard = [...board] as Board
-      newBoard[aiIndex] = 'O'
+      newBoard[idx] = 'O'
 
       const winResult = calculateWinner(newBoard)
       const drawResult = !winResult && checkDraw(newBoard)

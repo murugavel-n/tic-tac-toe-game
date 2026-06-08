@@ -5,52 +5,47 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/')
 })
 
-test('Tab navigates to game mode buttons', async ({ page }) => {
-  // Focus the body first
+test('Tab navigates to mode selection buttons', async ({ page }) => {
   await page.evaluate(() => (document.body as HTMLElement).focus())
 
-  let foundRadio = false
+  let foundModeButton = false
   for (let i = 0; i < 20; i++) {
     await page.keyboard.press('Tab')
-    const role = await page.evaluate(() => document.activeElement?.getAttribute('role'))
-    if (role === 'radio') {
-      foundRadio = true
+    const text = await page.evaluate(() => document.activeElement?.textContent?.trim())
+    if (text && (text.includes('Player vs Player') || text.includes('Play against Computer'))) {
+      foundModeButton = true
       break
     }
   }
 
-  expect(foundRadio).toBe(true)
+  expect(foundModeButton).toBe(true)
 })
 
 test('Can select game mode with keyboard', async ({ page }) => {
-  // Tab to the Player vs AI radio button
   await page.evaluate(() => (document.body as HTMLElement).focus())
 
-  let foundPvARadio = false
+  let foundPvC = false
   for (let i = 0; i < 20; i++) {
     await page.keyboard.press('Tab')
-    const label = await page.evaluate(() => document.activeElement?.textContent?.trim())
-    if (label === 'Player vs AI') {
-      foundPvARadio = true
+    const text = await page.evaluate(() => document.activeElement?.textContent?.trim())
+    if (text && text.includes('Play against Computer')) {
+      foundPvC = true
       break
     }
   }
 
-  expect(foundPvARadio).toBe(true)
+  expect(foundPvC).toBe(true)
 
-  // Press Enter to select it
+  // Press Enter to navigate to the details step
   await page.keyboard.press('Enter')
 
-  // Verify aria-checked is true on the Player vs AI radio
-  const pvaRadio = page.getByRole('radio', { name: 'Player vs AI' })
-  await expect(pvaRadio).toHaveAttribute('aria-checked', 'true')
+  // Should now see the Start Game button (step 2)
+  await expect(page.getByRole('button', { name: 'Start Game' })).toBeVisible()
 })
 
 test('Can play a full game with keyboard only', async ({ page }) => {
-  // Start the game first (click Start Game button)
   await startPvpGame(page)
 
-  // Tab through the interface until we reach board cells
   await page.evaluate(() => (document.body as HTMLElement).focus())
 
   let foundCell = false
@@ -65,52 +60,36 @@ test('Can play a full game with keyboard only', async ({ page }) => {
 
   expect(foundCell).toBe(true)
 
-  // Press Enter to place X on focused cell (e.g. Row 1, Col 1)
   await page.keyboard.press('Enter')
-
-  // Navigate to another cell and place O (Tab skips disabled cells)
+  await page.keyboard.press('Tab')
+  await page.keyboard.press('Enter')
   await page.keyboard.press('Tab')
   await page.keyboard.press('Enter')
 
-  // Navigate and place X
-  await page.keyboard.press('Tab')
-  await page.keyboard.press('Enter')
-
-  // Verify we're in a valid game state (at least a few moves have been made)
-  // Check via the game status container which always has exactly one p element
   const gameStatusDiv = page.locator('.text-center.py-2 p')
   await expect(gameStatusDiv).toBeVisible()
 
-  // Verify cells have been filled (fewer than 9 empty cells)
   const emptyCellCount = await page.getByRole('gridcell', { name: /empty/ }).count()
   expect(emptyCellCount).toBeLessThan(9)
 })
 
 test('Focus visible on cells', async ({ page }) => {
-  // Start the game first
   await startPvpGame(page)
 
-  // Focus a cell and verify focus ring styles are present
   const cell = page.getByRole('gridcell', { name: /Row 1, Column 1/ })
   await cell.focus()
 
-  // Verify focus doesn't throw and the cell exists
-  await expect(cell).toBeTruthy()
   await expect(cell).toBeVisible()
 
-  // Check that the cell has the focus-visible class styles in its class list
   const className = await cell.getAttribute('class')
   expect(className).toContain('focus-visible:ring-2')
 })
 
 test('New Game button keyboard', async ({ page }) => {
-  // Start the game first
   await startPvpGame(page)
 
-  // Play a move first
   await page.getByRole('gridcell', { name: /Row 1, Column 1/ }).click()
 
-  // Tab to the New Game button
   await page.evaluate(() => (document.body as HTMLElement).focus())
 
   let foundNewGame = false
@@ -126,10 +105,8 @@ test('New Game button keyboard', async ({ page }) => {
 
   expect(foundNewGame).toBe(true)
 
-  // Press Enter to click New Game
   await page.keyboard.press('Enter')
 
-  // Board should be reset
   const emptyCells = page.getByRole('gridcell', { name: /empty/ })
   await expect(emptyCells).toHaveCount(9)
 })

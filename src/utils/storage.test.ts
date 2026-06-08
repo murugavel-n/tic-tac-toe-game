@@ -9,8 +9,7 @@ describe('defaultScores', () => {
   it('returns an object with all counts set to 0', () => {
     const scores = defaultScores()
     expect(scores.pvp).toEqual({ X: 0, O: 0, draw: 0 })
-    expect(scores.pva.easy).toEqual({ X: 0, O: 0, draw: 0 })
-    expect(scores.pva.hard).toEqual({ X: 0, O: 0, draw: 0 })
+    expect(scores.pva).toEqual({ X: 0, O: 0, draw: 0 })
   })
 
   it('returns a fresh object each call (not shared reference)', () => {
@@ -44,10 +43,7 @@ describe('loadScores', () => {
   it('returns correct scores when valid data is stored', () => {
     const stored: Scores = {
       pvp: { X: 3, O: 1, draw: 2 },
-      pva: {
-        easy: { X: 5, O: 2, draw: 1 },
-        hard: { X: 1, O: 7, draw: 0 },
-      },
+      pva: { X: 5, O: 2, draw: 1 },
     }
     localStorage.setItem('ttt_scores', JSON.stringify(stored))
     expect(loadScores()).toEqual(stored)
@@ -60,7 +56,7 @@ describe('saveScores / loadScores roundtrip', () => {
     scores.pvp.X = 5
     scores.pvp.O = 3
     scores.pvp.draw = 1
-    scores.pva.hard.O = 10
+    scores.pva.O = 10
 
     saveScores(scores)
     const loaded = loadScores()

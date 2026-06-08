@@ -23,15 +23,12 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('New Game clears board', async ({ page }) => {
-  // Play 3 moves
   await clickCell(page, 1, 1)
   await clickCell(page, 2, 2)
   await clickCell(page, 1, 2)
 
-  // Click New Game
   await page.getByRole('button', { name: /new game/i }).click()
 
-  // All 9 cells should be empty
   const emptyCells = page.getByRole('gridcell', { name: /empty/ })
   await expect(emptyCells).toHaveCount(9)
 })
@@ -42,23 +39,18 @@ test('New Game keeps score', async ({ page }) => {
   const scoreBoard = page.getByRole('region', { name: /score board/i })
   await expect(scoreBoard.getByText('1', { exact: true })).toBeVisible()
 
-  // Start a new game
   await page.getByRole('button', { name: /new game/i }).click()
 
-  // Score should still be 1
   await expect(scoreBoard.getByText('1', { exact: true })).toBeVisible()
 })
 
 test('Reset Scores zeros all', async ({ page }) => {
   await playXWin(page)
 
-  // Click Reset Scores
   await page.getByRole('button', { name: /reset all scores/i }).click()
 
   const scoreBoard = page.getByRole('region', { name: /score board/i })
-  // Score of 1 should not be visible
   await expect(scoreBoard.getByText('1', { exact: true })).toHaveCount(0)
-  // All values should be 0
   await expect(scoreBoard.getByText('0', { exact: true }).first()).toBeVisible()
 })
 
@@ -73,31 +65,25 @@ test('Reset Scores persists after reload', async ({ page }) => {
   await expect(scoreBoard.getByText('0', { exact: true }).first()).toBeVisible()
 })
 
-test('Difficulty change resets board', async ({ page }) => {
-  // Switch to PvA easy via Change Setup
-  await changeSetupToPva(page, 'easy')
-
-  // Play a move
+test('Mode switch clears board', async ({ page }) => {
+  await clickCell(page, 1, 1)
   await clickCell(page, 2, 2)
-  await page.waitForTimeout(500)
 
-  // Change difficulty to hard via Change Setup
-  await changeSetupToPva(page, 'hard')
+  await changeSetupToPva(page)
 
-  // Board should be cleared
   const emptyCells = page.getByRole('gridcell', { name: /empty/ })
   await expect(emptyCells).toHaveCount(9)
 })
 
-test('Mode switch clears board', async ({ page }) => {
-  // Play a move in PvP mode
-  await clickCell(page, 1, 1)
-  await clickCell(page, 2, 2)
+test('Change Setup resets scores', async ({ page }) => {
+  await playXWin(page)
 
-  // Switch to PvA mode via Change Setup
-  await changeSetupToPva(page)
+  const scoreBoard = page.getByRole('region', { name: /score board/i })
+  await expect(scoreBoard.getByText('1', { exact: true })).toBeVisible()
 
-  // Board should be cleared
-  const emptyCells = page.getByRole('gridcell', { name: /empty/ })
-  await expect(emptyCells).toHaveCount(9)
+  // Change setup should reset scores
+  await changeSetupToPvp(page)
+
+  await expect(scoreBoard.getByText('1', { exact: true })).toHaveCount(0)
+  await expect(scoreBoard.getByText('0', { exact: true }).first()).toBeVisible()
 })

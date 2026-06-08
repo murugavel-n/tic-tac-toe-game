@@ -1,7 +1,14 @@
 import { useState } from 'react'
 import { useGame } from './hooks/useGame'
 import { calculateWinner } from './utils/gameLogic'
-import { GameSetup, loadSetup, saveSetup, clearSetup } from './utils/storage'
+import {
+  GameSetup,
+  loadSetup,
+  saveSetup,
+  clearSetup,
+  saveScores,
+  defaultScores,
+} from './utils/storage'
 import { Board } from './components/Board/Board'
 import { GameStatus } from './components/GameStatus/GameStatus'
 import { ScoreBoard } from './components/ScoreBoard/ScoreBoard'
@@ -27,7 +34,7 @@ function GameView({ setup, onChangeSetup }: { setup: GameSetup; onChangeSetup: (
 
   const symbolMap = { X: setup.player1.symbol, O: setup.player2.symbol }
 
-  const modeLabel = setup.mode === 'pvp' ? '👥 Player vs Player' : '🤖 Player vs Computer'
+  const modeLabel = setup.mode === 'pvp' ? '👥 Player vs Player' : '🎮 Play against Computer'
 
   return (
     <main className="min-h-screen bg-slate-800 flex flex-col items-center justify-center p-4">
@@ -67,6 +74,7 @@ function App() {
 
   function handleChangeSetup() {
     clearSetup()
+    saveScores(defaultScores())
     setSetup(null)
   }
 

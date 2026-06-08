@@ -1,5 +1,3 @@
-import { Difficulty } from './gameLogic'
-
 export interface GameRecord {
   X: number
   O: number
@@ -8,10 +6,7 @@ export interface GameRecord {
 
 export interface Scores {
   pvp: GameRecord
-  pva: {
-    easy: GameRecord
-    hard: GameRecord
-  }
+  pva: GameRecord
 }
 
 export type Symbol = 'X' | 'O' | '🦊' | '🐼' | '⭐' | '🔥' | '💎' | '🚀'
@@ -25,16 +20,12 @@ export interface GameSetup {
   mode: 'pvp' | 'pva'
   player1: PlayerSetup
   player2: PlayerSetup
-  difficulty: Difficulty
 }
 
 export function defaultScores(): Scores {
   return {
     pvp: { X: 0, O: 0, draw: 0 },
-    pva: {
-      easy: { X: 0, O: 0, draw: 0 },
-      hard: { X: 0, O: 0, draw: 0 },
-    },
+    pva: { X: 0, O: 0, draw: 0 },
   }
 }
 
@@ -46,9 +37,7 @@ export function loadScores(): Scores {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw === null) return defaultScores()
     const parsed = JSON.parse(raw) as Scores
-    if (!parsed.pvp || !parsed.pva || !parsed.pva.easy || !parsed.pva.hard) {
-      return defaultScores()
-    }
+    if (!parsed.pvp || !parsed.pva) return defaultScores()
     return parsed
   } catch {
     return defaultScores()

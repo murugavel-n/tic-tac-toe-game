@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { calculateWinner, isDraw, getAIMove, type Board } from './gameLogic'
+import { calculateWinner, isDraw, getComputerMove, type Board } from './gameLogic'
 
 // Helper to create a board from a string pattern (9 chars: X/O/.)
 function makeBoard(pattern: string): Board {
@@ -168,11 +168,11 @@ describe('isDraw', () => {
   })
 })
 
-describe('getAIMove — easy', () => {
+describe('getComputerMove', () => {
   it('always returns an empty cell index', () => {
     const board: Board = ['X', null, 'O', null, 'X', null, null, 'O', null]
     for (let i = 0; i < 20; i++) {
-      const move = getAIMove(board, 'easy')
+      const move = getComputerMove(board)
       expect(board[move]).toBeNull()
     }
   })
@@ -181,51 +181,14 @@ describe('getAIMove — easy', () => {
     const board: Board = ['X', null, 'O', null, 'X', null, null, 'O', null]
     const filledIndices = [0, 2, 4, 7]
     for (let i = 0; i < 20; i++) {
-      const move = getAIMove(board, 'easy')
+      const move = getComputerMove(board)
       expect(filledIndices).not.toContain(move)
     }
   })
 
   it('returns the only empty cell when there is one', () => {
     const board: Board = ['X', 'O', 'X', 'O', 'X', 'O', 'O', 'X', null]
-    const move = getAIMove(board, 'easy')
-    expect(move).toBe(8)
-  })
-})
-
-describe('getAIMove — hard (minimax)', () => {
-  it('blocks X from winning (X about to complete row 0)', () => {
-    // X has [0,1] — needs 2; O needs to block
-    const board: Board = ['X', 'X', null, null, 'O', null, null, null, null]
-    const move = getAIMove(board, 'hard')
-    expect(move).toBe(2)
-  })
-
-  it('takes the winning move when O can win immediately', () => {
-    // O has [3,4] — needs 5 to win row 1
-    const board: Board = ['X', 'X', null, 'O', 'O', null, null, null, null]
-    const move = getAIMove(board, 'hard')
-    expect(move).toBe(5)
-  })
-
-  it('on an empty board returns center or a corner (optimal minimax openings)', () => {
-    const move = getAIMove(EMPTY_BOARD, 'hard')
-    const optimalMoves = [0, 2, 4, 6, 8]
-    expect(optimalMoves).toContain(move)
-  })
-
-  it('blocks X from winning on a diagonal', () => {
-    // X has [0,4] — needs 8 to win diagonal [0,4,8]
-    const board: Board = ['X', null, null, null, 'X', null, null, null, null]
-    const move = getAIMove(board, 'hard')
-    // Minimax should either take 8 to block or play optimally — either way it must be an empty cell
-    expect(board[move]).toBeNull()
-  })
-
-  it('wins immediately rather than delaying', () => {
-    // O has [0,4] — can win at 8; X has [1,2]
-    const board: Board = ['O', 'X', 'X', null, 'O', null, null, null, null]
-    const move = getAIMove(board, 'hard')
+    const move = getComputerMove(board)
     expect(move).toBe(8)
   })
 })
