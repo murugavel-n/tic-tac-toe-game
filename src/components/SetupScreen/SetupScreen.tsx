@@ -68,7 +68,7 @@ function ModeStep({ onSelect }: { onSelect: (mode: 'pvp' | 'pva') => void }) {
           onClick={() => onSelect('pva')}
           className="group flex items-center gap-4 p-5 rounded-xl border-2 border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 outline-none text-left"
         >
-          <span className="text-4xl">🎮</span>
+          <span className="text-4xl">🤖</span>
           <div>
             <p className="text-base font-bold text-slate-800 group-hover:text-indigo-700">
               Play against Computer
@@ -116,7 +116,7 @@ function DetailsStep({
     })
   }
 
-  const modeLabel = mode === 'pvp' ? '👥 Player vs Player' : '🎮 Play against Computer'
+  const modeLabel = mode === 'pvp' ? '👥 Player vs Player' : '🤖 Play against Computer'
 
   return (
     <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-md flex flex-col gap-5">

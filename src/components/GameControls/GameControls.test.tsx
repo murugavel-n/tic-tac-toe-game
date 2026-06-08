@@ -14,12 +14,12 @@ describe('GameControls', () => {
 
     it('renders "Reset Scores" button', () => {
       render(<GameControls onNewGame={vi.fn()} onResetScores={vi.fn()} onChangeSetup={vi.fn()} />)
-      expect(screen.getByRole('button', { name: /reset.*scores/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Reset all scores' })).toBeInTheDocument()
     })
 
-    it('renders "Clean Start" button', () => {
+    it('renders "New Series" button', () => {
       render(<GameControls onNewGame={vi.fn()} onResetScores={vi.fn()} onChangeSetup={vi.fn()} />)
-      expect(screen.getByRole('button', { name: /clean start/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /new series/i })).toBeInTheDocument()
     })
 
     it('"New Game" button has accessible aria-label', () => {

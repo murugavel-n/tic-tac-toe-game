@@ -107,24 +107,30 @@ function GameView({ setup, onChangeSetup }: { setup: GameSetup; onChangeSetup: (
             className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-2xl z-10"
           >
             <div className="bg-white rounded-2xl p-6 mx-4 text-center flex flex-col gap-4 shadow-2xl">
-              <p className="text-3xl">🏆</p>
-              <p className="text-xl font-bold text-slate-800">Series Complete!</p>
               {seriesWinner ? (
-                <p className="text-base text-slate-700">
-                  <span className="font-bold">{seriesWinner}</span> wins the series!
-                </p>
+                <>
+                  <p className="text-3xl">🏆</p>
+                  <p className="text-xl font-bold text-slate-800">
+                    <span>{seriesWinner}</span> wins the series!
+                  </p>
+                  <p className="text-sm text-slate-500">
+                    Won {Math.max(record.X, record.O)} of {totalGames} games
+                  </p>
+                </>
               ) : (
-                <p className="text-base text-slate-700">It&apos;s a tie series! 🤝</p>
+                <>
+                  <p className="text-3xl">🤝</p>
+                  <p className="text-xl font-bold text-slate-800">All square!</p>
+                  <p className="text-sm text-slate-500">
+                    {totalGames} games played, nobody blinked
+                  </p>
+                </>
               )}
-              <p className="text-sm text-slate-500">
-                {setup.player1.name} {record.X} &ndash; {record.draw} &ndash; {record.O}{' '}
-                {setup.player2.name}
-              </p>
               <button
                 onClick={onChangeSetup}
                 className="w-full py-2.5 rounded-xl text-sm font-bold bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 outline-none"
               >
-                Back to Setup
+                New Series
               </button>
             </div>
           </div>

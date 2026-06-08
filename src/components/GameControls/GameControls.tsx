@@ -25,10 +25,10 @@ export function GameControls({ onNewGame, onResetScores, onChangeSetup }: GameCo
       </div>
       <button
         onClick={onChangeSetup}
-        aria-label="Clean start — reset everything and return to setup"
+        aria-label="New series — reset scores and return to setup"
         className="w-full py-2 px-3 sm:px-4 rounded-lg text-xs sm:text-sm font-semibold bg-white text-slate-600 border border-slate-300 hover:bg-slate-50 hover:border-slate-400 active:bg-slate-100 transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 outline-none"
       >
-        Clean Start
+        New Series
       </button>
     </div>
   )
