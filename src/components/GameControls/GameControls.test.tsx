@@ -17,6 +17,11 @@ describe('GameControls', () => {
       expect(screen.getByRole('button', { name: /reset.*scores/i })).toBeInTheDocument()
     })
 
+    it('renders "Clean Start" button', () => {
+      render(<GameControls onNewGame={vi.fn()} onResetScores={vi.fn()} onChangeSetup={vi.fn()} />)
+      expect(screen.getByRole('button', { name: /clean start/i })).toBeInTheDocument()
+    })
+
     it('"New Game" button has accessible aria-label', () => {
       render(<GameControls onNewGame={vi.fn()} onResetScores={vi.fn()} onChangeSetup={vi.fn()} />)
       expect(screen.getByRole('button', { name: 'Start a new game' })).toBeInTheDocument()

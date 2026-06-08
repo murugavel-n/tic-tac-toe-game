@@ -13,9 +13,6 @@ export function ScoreBoard({ scores, setup }: ScoreBoardProps) {
     <div role="region" aria-label="Score board" className="w-full">
       <div className="text-center mb-3">
         <h2 className="text-lg font-bold text-slate-800">Score</h2>
-        <p className="text-sm text-slate-600">
-          {player1.name} vs {player2.name}
-        </p>
       </div>
       <div className="grid grid-cols-3 gap-3">
         <div className="flex flex-col items-center bg-blue-50 rounded-xl p-3">

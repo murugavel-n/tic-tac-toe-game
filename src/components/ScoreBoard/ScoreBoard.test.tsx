@@ -32,9 +32,9 @@ describe('ScoreBoard', () => {
       expect(screen.getAllByText(/Bob/i).length).toBeGreaterThan(0)
     })
 
-    it('shows "Alice vs Bob" subtitle', () => {
+    it('does not show a name-vs-name subtitle (shown in the game card header instead)', () => {
       render(<ScoreBoard scores={makeScores()} setup={pvpSetup} />)
-      expect(screen.getByText('Alice vs Bob')).toBeInTheDocument()
+      expect(screen.queryByText('Alice vs Bob')).not.toBeInTheDocument()
     })
 
     it('displays correct score numbers', () => {
@@ -46,9 +46,9 @@ describe('ScoreBoard', () => {
   })
 
   describe('PvA mode', () => {
-    it('shows "Alice vs Computer" subtitle', () => {
+    it('does not show a name-vs-name subtitle in pva mode', () => {
       render(<ScoreBoard scores={makeScores()} setup={pvaSetup} />)
-      expect(screen.getByText('Alice vs Computer')).toBeInTheDocument()
+      expect(screen.queryByText('Alice vs Computer')).not.toBeInTheDocument()
     })
 
     it('displays pva scores, not pvp scores', () => {
