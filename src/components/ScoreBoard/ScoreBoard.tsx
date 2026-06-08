@@ -6,19 +6,13 @@ interface ScoreBoardProps {
 }
 
 export function ScoreBoard({ scores, setup }: ScoreBoardProps) {
-  const { mode, difficulty, player1, player2 } = setup
-  const record = mode === 'pvp' ? scores.pvp : scores.pva[difficulty]
-
-  const subtitle =
-    mode === 'pvp'
-      ? `${player1.name} vs ${player2.name}`
-      : `${player1.name} vs ${player2.name} · ${difficulty === 'easy' ? 'Easy' : 'Hard'}`
+  const { mode, player1, player2 } = setup
+  const record = mode === 'pvp' ? scores.pvp : scores.pva
 
   return (
     <div role="region" aria-label="Score board" className="w-full">
       <div className="text-center mb-3">
         <h2 className="text-lg font-bold text-slate-800">Score</h2>
-        <p className="text-sm text-slate-600">{subtitle}</p>
       </div>
       <div className="grid grid-cols-3 gap-3">
         <div className="flex flex-col items-center bg-blue-50 rounded-xl p-3">
