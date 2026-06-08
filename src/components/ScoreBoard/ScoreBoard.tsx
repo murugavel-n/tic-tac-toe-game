@@ -1,25 +1,18 @@
-import { Scores } from '../../utils/storage'
-import { Difficulty } from '../../utils/gameLogic'
+import { Scores, GameSetup } from '../../utils/storage'
 
 interface ScoreBoardProps {
   scores: Scores
-  gameMode: 'pvp' | 'pva'
-  difficulty: Difficulty
+  setup: GameSetup
 }
 
-export function ScoreBoard({ scores, gameMode, difficulty }: ScoreBoardProps) {
-  const record = gameMode === 'pvp' ? scores.pvp : scores.pva[difficulty]
-
-  const difficultyLabel: Record<Difficulty, string> = {
-    easy: 'Easy',
-    medium: 'Medium',
-    hard: 'Hard',
-  }
+export function ScoreBoard({ scores, setup }: ScoreBoardProps) {
+  const { mode, difficulty, player1, player2 } = setup
+  const record = mode === 'pvp' ? scores.pvp : scores.pva[difficulty]
 
   const subtitle =
-    gameMode === 'pvp' ? 'Player vs Player' : `Player vs AI · ${difficultyLabel[difficulty]}`
-
-  const oLabel = gameMode === 'pva' ? 'AI' : 'O'
+    mode === 'pvp'
+      ? `${player1.name} vs ${player2.name}`
+      : `${player1.name} vs ${player2.name} · ${difficulty === 'easy' ? 'Easy' : 'Hard'}`
 
   return (
     <div role="region" aria-label="Score board" className="w-full">
@@ -29,8 +22,8 @@ export function ScoreBoard({ scores, gameMode, difficulty }: ScoreBoardProps) {
       </div>
       <div className="grid grid-cols-3 gap-3">
         <div className="flex flex-col items-center bg-blue-50 rounded-xl p-3">
-          <span className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1">
-            X Wins
+          <span className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1 truncate w-full text-center">
+            {player1.name}
           </span>
           <span className="text-2xl sm:text-3xl font-bold text-blue-700">{record.X}</span>
         </div>
@@ -41,8 +34,8 @@ export function ScoreBoard({ scores, gameMode, difficulty }: ScoreBoardProps) {
           <span className="text-2xl sm:text-3xl font-bold text-slate-500">{record.draw}</span>
         </div>
         <div className="flex flex-col items-center bg-red-50 rounded-xl p-3">
-          <span className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1">
-            {oLabel} Wins
+          <span className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1 truncate w-full text-center">
+            {player2.name}
           </span>
           <span className="text-2xl sm:text-3xl font-bold text-red-700">{record.O}</span>
         </div>

@@ -1,3 +1,5 @@
+import { Difficulty } from './gameLogic'
+
 export interface GameRecord {
   X: number
   O: number
@@ -8,9 +10,22 @@ export interface Scores {
   pvp: GameRecord
   pva: {
     easy: GameRecord
-    medium: GameRecord
     hard: GameRecord
   }
+}
+
+export type Symbol = 'X' | 'O' | '🦊' | '🐼' | '⭐' | '🔥' | '💎' | '🚀'
+
+export interface PlayerSetup {
+  name: string
+  symbol: Symbol
+}
+
+export interface GameSetup {
+  mode: 'pvp' | 'pva'
+  player1: PlayerSetup
+  player2: PlayerSetup
+  difficulty: Difficulty
 }
 
 export function defaultScores(): Scores {
@@ -18,21 +33,20 @@ export function defaultScores(): Scores {
     pvp: { X: 0, O: 0, draw: 0 },
     pva: {
       easy: { X: 0, O: 0, draw: 0 },
-      medium: { X: 0, O: 0, draw: 0 },
       hard: { X: 0, O: 0, draw: 0 },
     },
   }
 }
 
 const STORAGE_KEY = 'ttt_scores'
+const SETUP_KEY = 'ttt_setup'
 
 export function loadScores(): Scores {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw === null) return defaultScores()
     const parsed = JSON.parse(raw) as Scores
-    // Validate required keys exist
-    if (!parsed.pvp || !parsed.pva || !parsed.pva.easy || !parsed.pva.medium || !parsed.pva.hard) {
+    if (!parsed.pvp || !parsed.pva || !parsed.pva.easy || !parsed.pva.hard) {
       return defaultScores()
     }
     return parsed
@@ -43,4 +57,22 @@ export function loadScores(): Scores {
 
 export function saveScores(scores: Scores): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(scores))
+}
+
+export function loadSetup(): GameSetup | null {
+  try {
+    const raw = localStorage.getItem(SETUP_KEY)
+    if (raw === null) return null
+    return JSON.parse(raw) as GameSetup
+  } catch {
+    return null
+  }
+}
+
+export function saveSetup(setup: GameSetup): void {
+  localStorage.setItem(SETUP_KEY, JSON.stringify(setup))
+}
+
+export function clearSetup(): void {
+  localStorage.removeItem(SETUP_KEY)
 }

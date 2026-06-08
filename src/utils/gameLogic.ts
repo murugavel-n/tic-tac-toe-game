@@ -1,7 +1,7 @@
 export type Player = 'X' | 'O'
 export type Cell = Player | null
 export type Board = Cell[] // length 9, indices 0-8 (row-major)
-export type Difficulty = 'easy' | 'medium' | 'hard'
+export type Difficulty = 'easy' | 'hard'
 
 const WIN_LINES = [
   [0, 1, 2],
@@ -40,32 +40,6 @@ export function getAIMove(board: Board, difficulty: Difficulty): number {
   const emptyCells = getEmptyCells(board)
 
   if (difficulty === 'easy') {
-    return emptyCells[Math.floor(Math.random() * emptyCells.length)]
-  }
-
-  if (difficulty === 'medium') {
-    // 1. Take winning move if available
-    for (const idx of emptyCells) {
-      const testBoard = [...board]
-      testBoard[idx] = 'O'
-      if (calculateWinner(testBoard)?.winner === 'O') return idx
-    }
-
-    // 2. Block X from winning
-    for (const idx of emptyCells) {
-      const testBoard = [...board]
-      testBoard[idx] = 'X'
-      if (calculateWinner(testBoard)?.winner === 'X') return idx
-    }
-
-    // 3. Prefer center
-    if (board[4] === null) return 4
-
-    // 4. Prefer corners
-    const corners = [0, 2, 6, 8].filter((i) => board[i] === null)
-    if (corners.length > 0) return corners[Math.floor(Math.random() * corners.length)]
-
-    // 5. Random
     return emptyCells[Math.floor(Math.random() * emptyCells.length)]
   }
 

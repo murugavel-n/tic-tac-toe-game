@@ -8,22 +8,22 @@ expect.extend(toHaveNoViolations)
 describe('GameControls', () => {
   describe('Rendering', () => {
     it('renders "New Game" button', () => {
-      render(<GameControls onNewGame={vi.fn()} onResetScores={vi.fn()} />)
+      render(<GameControls onNewGame={vi.fn()} onResetScores={vi.fn()} onChangeSetup={vi.fn()} />)
       expect(screen.getByRole('button', { name: /new game/i })).toBeInTheDocument()
     })
 
     it('renders "Reset Scores" button', () => {
-      render(<GameControls onNewGame={vi.fn()} onResetScores={vi.fn()} />)
+      render(<GameControls onNewGame={vi.fn()} onResetScores={vi.fn()} onChangeSetup={vi.fn()} />)
       expect(screen.getByRole('button', { name: /reset.*scores/i })).toBeInTheDocument()
     })
 
     it('"New Game" button has accessible aria-label', () => {
-      render(<GameControls onNewGame={vi.fn()} onResetScores={vi.fn()} />)
+      render(<GameControls onNewGame={vi.fn()} onResetScores={vi.fn()} onChangeSetup={vi.fn()} />)
       expect(screen.getByRole('button', { name: 'Start a new game' })).toBeInTheDocument()
     })
 
     it('"Reset Scores" button has accessible aria-label', () => {
-      render(<GameControls onNewGame={vi.fn()} onResetScores={vi.fn()} />)
+      render(<GameControls onNewGame={vi.fn()} onResetScores={vi.fn()} onChangeSetup={vi.fn()} />)
       expect(screen.getByRole('button', { name: 'Reset all scores' })).toBeInTheDocument()
     })
   })
@@ -31,14 +31,16 @@ describe('GameControls', () => {
   describe('Interaction', () => {
     it('clicking "New Game" calls onNewGame', () => {
       const onNewGame = vi.fn()
-      render(<GameControls onNewGame={onNewGame} onResetScores={vi.fn()} />)
+      render(<GameControls onNewGame={onNewGame} onResetScores={vi.fn()} onChangeSetup={vi.fn()} />)
       fireEvent.click(screen.getByRole('button', { name: 'Start a new game' }))
       expect(onNewGame).toHaveBeenCalledTimes(1)
     })
 
     it('clicking "Reset Scores" calls onResetScores', () => {
       const onResetScores = vi.fn()
-      render(<GameControls onNewGame={vi.fn()} onResetScores={onResetScores} />)
+      render(
+        <GameControls onNewGame={vi.fn()} onResetScores={onResetScores} onChangeSetup={vi.fn()} />
+      )
       fireEvent.click(screen.getByRole('button', { name: 'Reset all scores' }))
       expect(onResetScores).toHaveBeenCalledTimes(1)
     })
@@ -46,7 +48,9 @@ describe('GameControls', () => {
 
   describe('Accessibility (axe)', () => {
     it('passes axe', async () => {
-      const { container } = render(<GameControls onNewGame={vi.fn()} onResetScores={vi.fn()} />)
+      const { container } = render(
+        <GameControls onNewGame={vi.fn()} onResetScores={vi.fn()} onChangeSetup={vi.fn()} />
+      )
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })

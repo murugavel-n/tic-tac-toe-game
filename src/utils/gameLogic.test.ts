@@ -193,42 +193,6 @@ describe('getAIMove — easy', () => {
   })
 })
 
-describe('getAIMove — medium', () => {
-  it('takes an immediate winning move for O', () => {
-    // O has [3,4] — needs 5 to win row 1
-    const board: Board = ['X', 'X', null, 'O', 'O', null, null, null, null]
-    const move = getAIMove(board, 'medium')
-    expect(move).toBe(5)
-  })
-
-  it('blocks X from winning when X is about to complete a row', () => {
-    // X has [0,1] — needs 2 to win; O has nothing dangerous
-    const board: Board = ['X', 'X', null, null, 'O', null, null, null, null]
-    const move = getAIMove(board, 'medium')
-    expect(move).toBe(2)
-  })
-
-  it('blocks X from winning on a column', () => {
-    // X has [0,3] — needs 6 to win col 0
-    const board: Board = ['X', null, null, 'X', 'O', null, null, null, null]
-    const move = getAIMove(board, 'medium')
-    expect(move).toBe(6)
-  })
-
-  it('prefers center when no threat exists', () => {
-    // Board is empty — should take center
-    const move = getAIMove(EMPTY_BOARD, 'medium')
-    expect(move).toBe(4)
-  })
-
-  it('prefers a corner when center is taken and no threat exists', () => {
-    const board: Board = ['X', null, null, null, 'O', null, null, null, null]
-    const move = getAIMove(board, 'medium')
-    const corners = [0, 2, 6, 8]
-    expect(corners).toContain(move)
-  })
-})
-
 describe('getAIMove — hard (minimax)', () => {
   it('blocks X from winning (X about to complete row 0)', () => {
     // X has [0,1] — needs 2; O needs to block

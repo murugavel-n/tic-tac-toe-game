@@ -19,7 +19,14 @@ describe('Cell', () => {
       render(
         <div role="grid">
           <div role="row">
-            <Cell value={null} index={0} isWinning={false} onClick={vi.fn()} disabled={false} />
+            <Cell
+              value={null}
+              index={0}
+              isWinning={false}
+              onClick={vi.fn()}
+              disabled={false}
+              p1Symbol="X"
+            />
           </div>
         </div>
       )
@@ -32,7 +39,14 @@ describe('Cell', () => {
       render(
         <div role="grid">
           <div role="row">
-            <Cell value="X" index={0} isWinning={false} onClick={vi.fn()} disabled={false} />
+            <Cell
+              value="X"
+              index={0}
+              isWinning={false}
+              onClick={vi.fn()}
+              disabled={false}
+              p1Symbol="X"
+            />
           </div>
         </div>
       )
@@ -43,7 +57,14 @@ describe('Cell', () => {
       render(
         <div role="grid">
           <div role="row">
-            <Cell value="O" index={0} isWinning={false} onClick={vi.fn()} disabled={false} />
+            <Cell
+              value="O"
+              index={0}
+              isWinning={false}
+              onClick={vi.fn()}
+              disabled={false}
+              p1Symbol="X"
+            />
           </div>
         </div>
       )
@@ -54,7 +75,14 @@ describe('Cell', () => {
       render(
         <div role="grid">
           <div role="row">
-            <Cell value={null} index={0} isWinning={false} onClick={vi.fn()} disabled={false} />
+            <Cell
+              value={null}
+              index={0}
+              isWinning={false}
+              onClick={vi.fn()}
+              disabled={false}
+              p1Symbol="X"
+            />
           </div>
         </div>
       )
@@ -65,7 +93,14 @@ describe('Cell', () => {
       render(
         <div role="grid">
           <div role="row">
-            <Cell value="X" index={4} isWinning={false} onClick={vi.fn()} disabled={false} />
+            <Cell
+              value="X"
+              index={4}
+              isWinning={false}
+              onClick={vi.fn()}
+              disabled={false}
+              p1Symbol="X"
+            />
           </div>
         </div>
       )
@@ -76,7 +111,14 @@ describe('Cell', () => {
       render(
         <div role="grid">
           <div role="row">
-            <Cell value="O" index={8} isWinning={false} onClick={vi.fn()} disabled={false} />
+            <Cell
+              value="O"
+              index={8}
+              isWinning={false}
+              onClick={vi.fn()}
+              disabled={false}
+              p1Symbol="X"
+            />
           </div>
         </div>
       )
@@ -90,7 +132,14 @@ describe('Cell', () => {
       render(
         <div role="grid">
           <div role="row">
-            <Cell value={null} index={0} isWinning={false} onClick={onClick} disabled={false} />
+            <Cell
+              value={null}
+              index={0}
+              isWinning={false}
+              onClick={onClick}
+              disabled={false}
+              p1Symbol="X"
+            />
           </div>
         </div>
       )
@@ -103,7 +152,14 @@ describe('Cell', () => {
       render(
         <div role="grid">
           <div role="row">
-            <Cell value={null} index={0} isWinning={false} onClick={onClick} disabled={true} />
+            <Cell
+              value={null}
+              index={0}
+              isWinning={false}
+              onClick={onClick}
+              disabled={true}
+              p1Symbol="X"
+            />
           </div>
         </div>
       )
@@ -116,7 +172,14 @@ describe('Cell', () => {
       render(
         <div role="grid">
           <div role="row">
-            <Cell value="X" index={0} isWinning={false} onClick={onClick} disabled={true} />
+            <Cell
+              value="X"
+              index={0}
+              isWinning={false}
+              onClick={onClick}
+              disabled={true}
+              p1Symbol="X"
+            />
           </div>
         </div>
       )
@@ -130,7 +193,14 @@ describe('Cell', () => {
       render(
         <div role="grid">
           <div role="row">
-            <Cell value={null} index={0} isWinning={false} onClick={vi.fn()} disabled={false} />
+            <Cell
+              value={null}
+              index={0}
+              isWinning={false}
+              onClick={vi.fn()}
+              disabled={false}
+              p1Symbol="X"
+            />
           </div>
         </div>
       )
@@ -141,7 +211,14 @@ describe('Cell', () => {
       render(
         <div role="grid">
           <div role="row">
-            <Cell value={null} index={0} isWinning={false} onClick={vi.fn()} disabled={true} />
+            <Cell
+              value={null}
+              index={0}
+              isWinning={false}
+              onClick={vi.fn()}
+              disabled={true}
+              p1Symbol="X"
+            />
           </div>
         </div>
       )
@@ -152,7 +229,14 @@ describe('Cell', () => {
       render(
         <div role="grid">
           <div role="row">
-            <Cell value={null} index={0} isWinning={false} onClick={vi.fn()} disabled={false} />
+            <Cell
+              value={null}
+              index={0}
+              isWinning={false}
+              onClick={vi.fn()}
+              disabled={false}
+              p1Symbol="X"
+            />
           </div>
         </div>
       )
@@ -163,7 +247,14 @@ describe('Cell', () => {
       render(
         <div role="grid">
           <div role="row">
-            <Cell value="X" index={0} isWinning={true} onClick={vi.fn()} disabled={false} />
+            <Cell
+              value="X"
+              index={0}
+              isWinning={true}
+              onClick={vi.fn()}
+              disabled={false}
+              p1Symbol="X"
+            />
           </div>
         </div>
       )
@@ -174,7 +265,14 @@ describe('Cell', () => {
   describe('Accessibility (axe)', () => {
     it('empty cell passes axe', async () => {
       const { container } = renderInGrid(
-        <Cell value={null} index={0} isWinning={false} onClick={vi.fn()} disabled={false} />
+        <Cell
+          value={null}
+          index={0}
+          isWinning={false}
+          onClick={vi.fn()}
+          disabled={false}
+          p1Symbol="X"
+        />
       )
       const results = await axe(container)
       expect(results).toHaveNoViolations()
@@ -182,7 +280,14 @@ describe('Cell', () => {
 
     it('X cell passes axe', async () => {
       const { container } = renderInGrid(
-        <Cell value="X" index={0} isWinning={false} onClick={vi.fn()} disabled={false} />
+        <Cell
+          value="X"
+          index={0}
+          isWinning={false}
+          onClick={vi.fn()}
+          disabled={false}
+          p1Symbol="X"
+        />
       )
       const results = await axe(container)
       expect(results).toHaveNoViolations()
@@ -198,7 +303,14 @@ describe('Cell', () => {
 
     it('winning cell passes axe', async () => {
       const { container } = renderInGrid(
-        <Cell value="X" index={0} isWinning={true} onClick={vi.fn()} disabled={false} />
+        <Cell
+          value="X"
+          index={0}
+          isWinning={true}
+          onClick={vi.fn()}
+          disabled={false}
+          p1Symbol="X"
+        />
       )
       const results = await axe(container)
       expect(results).toHaveNoViolations()

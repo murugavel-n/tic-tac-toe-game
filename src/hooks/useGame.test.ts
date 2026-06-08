@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import { useGame } from './useGame'
-import { defaultScores } from '../utils/storage'
+import { defaultScores, type GameSetup } from '../utils/storage'
 
 vi.mock('../utils/storage', () => ({
   loadScores: vi.fn(() => defaultScores()),
@@ -10,7 +10,6 @@ vi.mock('../utils/storage', () => ({
     pvp: { X: 0, O: 0, draw: 0 },
     pva: {
       easy: { X: 0, O: 0, draw: 0 },
-      medium: { X: 0, O: 0, draw: 0 },
       hard: { X: 0, O: 0, draw: 0 },
     },
   }),
@@ -19,32 +18,46 @@ vi.mock('../utils/storage', () => ({
 // Import after mock
 import { loadScores, saveScores } from '../utils/storage'
 
+const pvpSetup: GameSetup = {
+  mode: 'pvp',
+  player1: { name: 'Alice', symbol: 'X' },
+  player2: { name: 'Bob', symbol: 'O' },
+  difficulty: 'easy',
+}
+
+const pvaSetup: GameSetup = {
+  mode: 'pva',
+  player1: { name: 'Alice', symbol: 'X' },
+  player2: { name: 'Computer', symbol: 'O' },
+  difficulty: 'easy',
+}
+
 describe('useGame', () => {
   describe('Initial state', () => {
     it('board is 9 nulls', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvpSetup))
       expect(result.current.board).toEqual(Array(9).fill(null))
     })
 
     it('currentPlayer is X', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvpSetup))
       expect(result.current.currentPlayer).toBe('X')
     })
 
     it('winner is null and isDraw is false', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvpSetup))
       expect(result.current.winner).toBeNull()
       expect(result.current.isDraw).toBe(false)
     })
 
-    it('gameMode is pvp and difficulty is easy', () => {
-      const { result } = renderHook(() => useGame())
-      expect(result.current.gameMode).toBe('pvp')
-      expect(result.current.difficulty).toBe('easy')
+    it('setup reflects passed-in mode and difficulty', () => {
+      const { result } = renderHook(() => useGame(pvpSetup))
+      expect(result.current.setup.mode).toBe('pvp')
+      expect(result.current.setup.difficulty).toBe('easy')
     })
 
     it('scores loaded from loadScores()', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvpSetup))
       expect(loadScores).toHaveBeenCalled()
       expect(result.current.scores).toEqual(defaultScores())
     })
@@ -52,7 +65,7 @@ describe('useGame', () => {
 
   describe('handleCellClick — PvP', () => {
     it('clicking empty cell places X, then O alternates', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvpSetup))
 
       act(() => {
         result.current.handleCellClick(0)
@@ -68,7 +81,7 @@ describe('useGame', () => {
     })
 
     it('clicking filled cell does nothing', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvpSetup))
 
       act(() => {
         result.current.handleCellClick(0)
@@ -82,7 +95,7 @@ describe('useGame', () => {
     })
 
     it('clicking when game is over does nothing', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvpSetup))
 
       // X wins: 0,1,2
       act(() => {
@@ -110,7 +123,7 @@ describe('useGame', () => {
     })
 
     it('winning move sets winner correctly', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvpSetup))
 
       act(() => {
         result.current.handleCellClick(0)
@@ -132,7 +145,7 @@ describe('useGame', () => {
     })
 
     it('draw sets isDraw correctly', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvpSetup))
 
       // Draw sequence:
       // X O X
@@ -171,7 +184,7 @@ describe('useGame', () => {
     })
 
     it('score is incremented and saveScores called on win', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvpSetup))
       const mockSaveScores = saveScores as ReturnType<typeof vi.fn>
       mockSaveScores.mockClear()
 
@@ -196,7 +209,7 @@ describe('useGame', () => {
     })
 
     it('score is incremented and saveScores called on draw', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvpSetup))
       const mockSaveScores = saveScores as ReturnType<typeof vi.fn>
       mockSaveScores.mockClear()
 
@@ -243,11 +256,7 @@ describe('useGame', () => {
     })
 
     it('X click is registered immediately', () => {
-      const { result } = renderHook(() => useGame())
-
-      act(() => {
-        result.current.setGameMode('pva')
-      })
+      const { result } = renderHook(() => useGame(pvaSetup))
 
       act(() => {
         result.current.handleCellClick(0)
@@ -257,11 +266,8 @@ describe('useGame', () => {
     })
 
     it('after X clicks, currentPlayer becomes O', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvaSetup))
 
-      act(() => {
-        result.current.setGameMode('pva')
-      })
       act(() => {
         result.current.handleCellClick(0)
       })
@@ -270,11 +276,8 @@ describe('useGame', () => {
     })
 
     it('after advancing fake timers by 300ms, AI places O on the board', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvaSetup))
 
-      act(() => {
-        result.current.setGameMode('pva')
-      })
       act(() => {
         result.current.handleCellClick(0)
       })
@@ -289,11 +292,8 @@ describe('useGame', () => {
     })
 
     it('clicking as O turn in pva mode does nothing', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvaSetup))
 
-      act(() => {
-        result.current.setGameMode('pva')
-      })
       act(() => {
         result.current.handleCellClick(0)
       })
@@ -311,7 +311,7 @@ describe('useGame', () => {
 
   describe('startNewGame', () => {
     it('resets board to 9 nulls', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvpSetup))
 
       act(() => {
         result.current.handleCellClick(0)
@@ -324,7 +324,7 @@ describe('useGame', () => {
     })
 
     it('resets currentPlayer to X', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvpSetup))
 
       act(() => {
         result.current.handleCellClick(0)
@@ -337,9 +337,8 @@ describe('useGame', () => {
     })
 
     it('clears winner and isDraw', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvpSetup))
 
-      // Create a win
       act(() => {
         result.current.handleCellClick(0)
       })
@@ -367,9 +366,8 @@ describe('useGame', () => {
     })
 
     it('does NOT reset scores', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvpSetup))
 
-      // Win a game to get a score
       act(() => {
         result.current.handleCellClick(0)
       })
@@ -398,9 +396,8 @@ describe('useGame', () => {
 
   describe('resetScores', () => {
     it('scores reset to all zeros', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvpSetup))
 
-      // Win to get score
       act(() => {
         result.current.handleCellClick(0)
       })
@@ -427,7 +424,7 @@ describe('useGame', () => {
     })
 
     it('saveScores called with zeroed scores', () => {
-      const { result } = renderHook(() => useGame())
+      const { result } = renderHook(() => useGame(pvpSetup))
       const mockSaveScores = saveScores as ReturnType<typeof vi.fn>
       mockSaveScores.mockClear()
 
@@ -436,62 +433,6 @@ describe('useGame', () => {
       })
 
       expect(mockSaveScores).toHaveBeenCalledWith(defaultScores())
-    })
-  })
-
-  describe('setGameMode', () => {
-    it('updates gameMode', () => {
-      const { result } = renderHook(() => useGame())
-
-      act(() => {
-        result.current.setGameMode('pva')
-      })
-
-      expect(result.current.gameMode).toBe('pva')
-    })
-
-    it('resets board state', () => {
-      const { result } = renderHook(() => useGame())
-
-      act(() => {
-        result.current.handleCellClick(0)
-      })
-      act(() => {
-        result.current.setGameMode('pva')
-      })
-
-      expect(result.current.board).toEqual(Array(9).fill(null))
-      expect(result.current.currentPlayer).toBe('X')
-      expect(result.current.winner).toBeNull()
-      expect(result.current.isDraw).toBe(false)
-    })
-  })
-
-  describe('setDifficulty', () => {
-    it('updates difficulty', () => {
-      const { result } = renderHook(() => useGame())
-
-      act(() => {
-        result.current.setDifficulty('hard')
-      })
-
-      expect(result.current.difficulty).toBe('hard')
-    })
-
-    it('resets board state', () => {
-      const { result } = renderHook(() => useGame())
-
-      act(() => {
-        result.current.handleCellClick(0)
-      })
-      act(() => {
-        result.current.setDifficulty('medium')
-      })
-
-      expect(result.current.board).toEqual(Array(9).fill(null))
-      expect(result.current.currentPlayer).toBe('X')
-      expect(result.current.winner).toBeNull()
-      expect(result.current.isDraw).toBe(false)
     })
   })
 })

@@ -8,11 +8,6 @@ interface DifficultySelectorProps {
 
 const options: { value: Difficulty; label: string; selectedClass: string }[] = [
   { value: 'easy', label: 'Easy', selectedClass: 'bg-green-600 text-white border-green-600' },
-  {
-    value: 'medium',
-    label: 'Medium',
-    selectedClass: 'bg-yellow-400 text-slate-900 border-yellow-400',
-  },
   { value: 'hard', label: 'Hard', selectedClass: 'bg-red-600 text-white border-red-600' },
 ]
 

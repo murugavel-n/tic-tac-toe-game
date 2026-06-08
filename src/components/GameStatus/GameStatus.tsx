@@ -1,22 +1,23 @@
+import { GameSetup } from '../../utils/storage'
+
 interface GameStatusProps {
   currentPlayer: 'X' | 'O'
   winner: 'X' | 'O' | null
   isDraw: boolean
-  gameMode: 'pvp' | 'pva'
+  setup: GameSetup
 }
 
-export function GameStatus({ currentPlayer, winner, isDraw, gameMode }: GameStatusProps) {
-  const isAiThinking = gameMode === 'pva' && currentPlayer === 'O' && !winner && !isDraw
+export function GameStatus({ currentPlayer, winner, isDraw, setup }: GameStatusProps) {
+  const { player1, player2, mode } = setup
+  const currentName = currentPlayer === 'X' ? player1.name : player2.name
+  const isAiThinking = mode === 'pva' && currentPlayer === 'O' && !winner && !isDraw
 
-  const turnText = isAiThinking ? 'AI is thinking...' : `Player ${currentPlayer}'s turn`
+  const turnText = isAiThinking ? `${player2.name} is thinking...` : `${currentName}'s turn`
 
   let resultText = ''
   if (winner) {
-    if (gameMode === 'pva' && winner === 'O') {
-      resultText = 'AI wins! 🤖'
-    } else {
-      resultText = `Player ${winner} wins! 🎉`
-    }
+    const winnerName = winner === 'X' ? player1.name : player2.name
+    resultText = `${winnerName} wins! 🎉`
   } else if (isDraw) {
     resultText = "It's a draw! 🤝"
   }
