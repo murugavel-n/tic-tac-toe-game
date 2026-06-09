@@ -92,12 +92,16 @@ test('Status updates after moves', async ({ page }) => {
   await expect(page.getByText(/Player 1's turn/)).toBeVisible()
 })
 
-test('New Game resets board', async ({ page }) => {
+test('Next Game resets board', async ({ page }) => {
+  // X wins top row so the game ends and Next Game button appears
   await clickCell(page, 1, 1)
-  await clickCell(page, 2, 2)
+  await clickCell(page, 2, 1)
   await clickCell(page, 1, 2)
+  await clickCell(page, 2, 2)
+  await clickCell(page, 1, 3)
+  await expect(page.getByText(/Player 1 wins/)).toBeVisible()
 
-  await page.getByRole('button', { name: /new game/i }).click()
+  await page.getByRole('button', { name: /next game/i }).click()
 
   // All 9 cells should be empty
   const cells = page.getByRole('gridcell', { name: /empty/ })

@@ -85,25 +85,31 @@ test('Focus visible on cells', async ({ page }) => {
   expect(className).toContain('focus-visible:ring-2')
 })
 
-test('New Game button keyboard', async ({ page }) => {
+test('Next Game button keyboard', async ({ page }) => {
   await startPvpGame(page)
 
+  // X wins top row so Next Game button appears
   await page.getByRole('gridcell', { name: /Row 1, Column 1/ }).click()
+  await page.getByRole('gridcell', { name: /Row 2, Column 1/ }).click()
+  await page.getByRole('gridcell', { name: /Row 1, Column 2/ }).click()
+  await page.getByRole('gridcell', { name: /Row 2, Column 2/ }).click()
+  await page.getByRole('gridcell', { name: /Row 1, Column 3/ }).click()
+  await expect(page.getByText(/Player 1 wins/)).toBeVisible()
 
   await page.evaluate(() => (document.body as HTMLElement).focus())
 
-  let foundNewGame = false
+  let foundNextGame = false
   for (let i = 0; i < 30; i++) {
     await page.keyboard.press('Tab')
     const label = await page.evaluate(() => document.activeElement?.textContent?.trim())
     const ariaLabel = await page.evaluate(() => document.activeElement?.getAttribute('aria-label'))
-    if (label === 'New Game' || ariaLabel === 'Start a new game') {
-      foundNewGame = true
+    if (label === 'Next Game' || ariaLabel === 'Start next game') {
+      foundNextGame = true
       break
     }
   }
 
-  expect(foundNewGame).toBe(true)
+  expect(foundNextGame).toBe(true)
 
   await page.keyboard.press('Enter')
 

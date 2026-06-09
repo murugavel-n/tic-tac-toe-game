@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { startPvpGame, changeSetupToPva, changeSetupToPvp } from './helpers'
+import { startPvpGame, changeSetupToPva } from './helpers'
 
 async function clickCell(page: any, row: number, col: number) {
   await page.getByRole('gridcell', { name: new RegExp(`Row ${row}, Column ${col}`) }).click()
@@ -46,14 +46,11 @@ test('Score increments on X win (PvP)', async ({ page }) => {
 test('Score persists after reload', async ({ page }) => {
   await playXWin(page)
 
-  // Verify score is 1
   const scoreBoard = page.getByRole('region', { name: /score board/i })
   await expect(scoreBoard.getByText('1', { exact: true })).toBeVisible()
 
-  // Reload page — setup is saved so the game view should persist
   await page.reload()
 
-  // Score should still be 1
   await expect(scoreBoard.getByText('1', { exact: true })).toBeVisible()
 })
 
@@ -64,27 +61,14 @@ test('Draw increments draw counter', async ({ page }) => {
   await expect(scoreBoard.getByText('1', { exact: true })).toBeVisible()
 })
 
-test('Reset Score clears scores', async ({ page }) => {
+test('New Series resets scores to zero', async ({ page }) => {
   await playXWin(page)
 
-  // Click Reset Scores
-  await page.getByRole('button', { name: /reset all scores/i }).click()
+  await page.getByRole('button', { name: /finish series/i }).click()
+  await page.getByRole('button', { name: /new series/i }).click()
 
-  // All scores should show 0
-  const scoreBoard = page.getByRole('region', { name: /score board/i })
-  const scoreValues = scoreBoard.getByText('0', { exact: true })
-  await expect(scoreValues.first()).toBeVisible()
-
-  // Score of 1 should no longer be present inside the score board
-  await expect(scoreBoard.getByText('1', { exact: true })).toHaveCount(0)
-})
-
-test('Reset Score persists after reload', async ({ page }) => {
-  await playXWin(page)
-  await page.getByRole('button', { name: /reset all scores/i }).click()
-
-  // Reload — setup is persisted so game view should show
-  await page.reload()
+  // Back on setup screen — start a new game and verify scores start at 0
+  await startPvpGame(page)
 
   const scoreBoard = page.getByRole('region', { name: /score board/i })
   await expect(scoreBoard.getByText('1', { exact: true })).toHaveCount(0)
@@ -92,13 +76,11 @@ test('Reset Score persists after reload', async ({ page }) => {
 })
 
 test('Change Setup resets scores to zero', async ({ page }) => {
-  // Record a PvP win first (score = 1)
   await playXWin(page)
 
   const scoreBoard = page.getByRole('region', { name: /score board/i })
   await expect(scoreBoard.getByText('1', { exact: true })).toBeVisible()
 
-  // Change setup — scores should reset
   await changeSetupToPva(page)
 
   await expect(scoreBoard.getByText('1', { exact: true })).toHaveCount(0)

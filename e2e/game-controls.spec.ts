@@ -22,47 +22,39 @@ test.beforeEach(async ({ page }) => {
   await startPvpGame(page)
 })
 
-test('New Game clears board', async ({ page }) => {
-  await clickCell(page, 1, 1)
-  await clickCell(page, 2, 2)
-  await clickCell(page, 1, 2)
+test('Next Game clears board', async ({ page }) => {
+  await playXWin(page)
 
-  await page.getByRole('button', { name: /new game/i }).click()
+  await page.getByRole('button', { name: /next game/i }).click()
 
   const emptyCells = page.getByRole('gridcell', { name: /empty/ })
   await expect(emptyCells).toHaveCount(9)
 })
 
-test('New Game keeps score', async ({ page }) => {
+test('Next Game keeps score', async ({ page }) => {
   await playXWin(page)
 
   const scoreBoard = page.getByRole('region', { name: /score board/i })
   await expect(scoreBoard.getByText('1', { exact: true })).toBeVisible()
 
-  await page.getByRole('button', { name: /new game/i }).click()
+  await page.getByRole('button', { name: /next game/i }).click()
 
   await expect(scoreBoard.getByText('1', { exact: true })).toBeVisible()
 })
 
-test('Reset Scores zeros all', async ({ page }) => {
+test('Finish Series shows results popup', async ({ page }) => {
   await playXWin(page)
 
-  await page.getByRole('button', { name: /reset all scores/i }).click()
+  await page.getByRole('button', { name: /finish series/i }).click()
 
-  const scoreBoard = page.getByRole('region', { name: /score board/i })
-  await expect(scoreBoard.getByText('1', { exact: true })).toHaveCount(0)
-  await expect(scoreBoard.getByText('0', { exact: true }).first()).toBeVisible()
+  await expect(page.getByRole('dialog', { name: /series complete/i })).toBeVisible()
 })
 
-test('Reset Scores persists after reload', async ({ page }) => {
-  await playXWin(page)
-  await page.getByRole('button', { name: /reset all scores/i }).click()
+test('New Series in popup navigates to setup screen', async ({ page }) => {
+  await page.getByRole('button', { name: /finish series/i }).click()
+  await page.getByRole('button', { name: /new series/i }).click()
 
-  await page.reload()
-
-  const scoreBoard = page.getByRole('region', { name: /score board/i })
-  await expect(scoreBoard.getByText('1', { exact: true })).toHaveCount(0)
-  await expect(scoreBoard.getByText('0', { exact: true }).first()).toBeVisible()
+  await expect(page.getByRole('button', { name: /Player vs Player/ })).toBeVisible()
 })
 
 test('Mode switch clears board', async ({ page }) => {
@@ -81,7 +73,6 @@ test('Change Setup resets scores', async ({ page }) => {
   const scoreBoard = page.getByRole('region', { name: /score board/i })
   await expect(scoreBoard.getByText('1', { exact: true })).toBeVisible()
 
-  // Change setup should reset scores
   await changeSetupToPvp(page)
 
   await expect(scoreBoard.getByText('1', { exact: true })).toHaveCount(0)
