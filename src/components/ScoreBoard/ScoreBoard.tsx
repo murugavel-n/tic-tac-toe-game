@@ -3,16 +3,31 @@ import { Scores, GameSetup } from '../../utils/storage'
 interface ScoreBoardProps {
   scores: Scores
   setup: GameSetup
+  gamesPlayed: number
 }
 
-export function ScoreBoard({ scores, setup }: ScoreBoardProps) {
-  const { mode, player1, player2 } = setup
+export function ScoreBoard({ scores, setup, gamesPlayed }: ScoreBoardProps) {
+  const { mode, player1, player2, seriesLength } = setup
   const record = mode === 'pvp' ? scores.pvp : scores.pva
+
+  const gamesRemaining = Math.max(0, seriesLength - gamesPlayed)
+  const isSeriesComplete = gamesPlayed >= seriesLength
+
+  const badgeLabel = isSeriesComplete
+    ? 'Series complete'
+    : gamesPlayed === 0
+      ? `${seriesLength} games`
+      : `${gamesRemaining} of ${seriesLength} left`
 
   return (
     <div role="region" aria-label="Score board" className="w-full">
-      <div className="text-center mb-3">
-        <h2 className="text-lg font-bold text-slate-800">Score</h2>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-base font-bold text-slate-800">Score</h2>
+        <span
+          className={`text-xs font-semibold px-2 py-0.5 rounded-full ${isSeriesComplete ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-500'}`}
+        >
+          {badgeLabel}
+        </span>
       </div>
       <div className="grid grid-cols-3 gap-3">
         <div className="flex flex-col items-center bg-blue-50 rounded-xl p-3">

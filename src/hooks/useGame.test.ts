@@ -381,46 +381,4 @@ describe('useGame', () => {
       expect(result.current.scores.pvp.X).toBe(1)
     })
   })
-
-  describe('resetScores', () => {
-    it('scores reset to all zeros', () => {
-      const { result } = renderHook(() => useGame(pvpSetup))
-
-      act(() => {
-        result.current.handleCellClick(0)
-      })
-      act(() => {
-        result.current.handleCellClick(3)
-      })
-      act(() => {
-        result.current.handleCellClick(1)
-      })
-      act(() => {
-        result.current.handleCellClick(4)
-      })
-      act(() => {
-        result.current.handleCellClick(2)
-      })
-
-      expect(result.current.scores.pvp.X).toBe(1)
-
-      act(() => {
-        result.current.resetScores()
-      })
-
-      expect(result.current.scores).toEqual(defaultScores())
-    })
-
-    it('saveScores called with zeroed scores', () => {
-      const { result } = renderHook(() => useGame(pvpSetup))
-      const mockSaveScores = saveScores as ReturnType<typeof vi.fn>
-      mockSaveScores.mockClear()
-
-      act(() => {
-        result.current.resetScores()
-      })
-
-      expect(mockSaveScores).toHaveBeenCalledWith(defaultScores())
-    })
-  })
 })

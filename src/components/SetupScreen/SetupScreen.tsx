@@ -81,6 +81,8 @@ function ModeStep({ onSelect }: { onSelect: (mode: 'pvp' | 'pva') => void }) {
   )
 }
 
+const SERIES_OPTIONS = [3, 5, 7, 10]
+
 function DetailsStep({
   mode,
   onBack,
@@ -94,6 +96,7 @@ function DetailsStep({
   const [p2Name, setP2Name] = useState('')
   const [p1Symbol, setP1Symbol] = useState<Symbol>('X')
   const [p2Symbol, setP2Symbol] = useState<Symbol>('O')
+  const [seriesLength, setSeriesLength] = useState(5)
 
   function handleP1Symbol(sym: Symbol) {
     setP1Symbol(sym)
@@ -113,6 +116,7 @@ function DetailsStep({
         name: mode === 'pva' ? 'Computer' : p2Name.trim() || 'Player 2',
         symbol: p2Symbol,
       },
+      seriesLength,
     })
   }
 
@@ -183,6 +187,26 @@ function DetailsStep({
           </div>
         </>
       )}
+
+      <hr className="border-slate-100" />
+
+      <div>
+        <p className="text-sm font-semibold text-slate-700 mb-2">Games in Series</p>
+        <div role="radiogroup" aria-label="Games in series" className="grid grid-cols-4 gap-2">
+          {SERIES_OPTIONS.map((n) => (
+            <button
+              key={n}
+              role="radio"
+              aria-checked={seriesLength === n}
+              onClick={() => setSeriesLength(n)}
+              className={`py-2 rounded-xl text-sm font-bold border-2 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 outline-none
+                ${seriesLength === n ? 'bg-indigo-600 text-white border-indigo-600 shadow-md' : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-300 hover:text-indigo-600'}`}
+            >
+              {n}
+            </button>
+          ))}
+        </div>
+      </div>
 
       <button
         onClick={handleStart}

@@ -26,17 +26,19 @@ function createConfetti() {
   return { fire, remove: () => document.body.removeChild(canvas) }
 }
 
-function GameView({ setup, onChangeSetup }: { setup: GameSetup; onChangeSetup: () => void }) {
+function GameView({ setup, onNewSeries }: { setup: GameSetup; onNewSeries: () => void }) {
   const {
     board,
     currentPlayer,
     winner,
     isDraw,
     scores,
+    gamesPlayed,
     handleCellClick,
     startNewGame,
-    resetScores,
   } = useGame(setup)
+
+  const [forcedSeriesEnd, setForcedSeriesEnd] = useState(false)
 
   const winResult = calculateWinner(board)
   const winningLine = winResult?.line ?? null
@@ -45,12 +47,24 @@ function GameView({ setup, onChangeSetup }: { setup: GameSetup; onChangeSetup: (
 
   const symbolMap = { X: setup.player1.symbol, O: setup.player2.symbol }
 
+  const gameEnded = winner !== null || isDraw
+  const isSeriesComplete = gamesPlayed >= setup.seriesLength
+  const seriesOver = isSeriesComplete || forcedSeriesEnd
+
   const record = setup.mode === 'pvp' ? scores.pvp : scores.pva
   const totalGames = record.X + record.O + record.draw
-  const seriesOver = totalGames >= 10
 
+  // Who won more games overall
   const seriesWinner =
     record.X > record.O ? setup.player1.name : record.O > record.X ? setup.player2.name : null
+
+  // Per-player result summaries for the overlay
+  function playerSummary(wins: number, draws: number, played: number) {
+    if (wins > 0) return `${wins} win${wins > 1 ? 's' : ''}`
+    if (draws > 0 && draws === played) return 'All draws'
+    if (draws > 0) return `${draws} draw${draws > 1 ? 's' : ''}`
+    return 'No wins'
+  }
 
   const seriesConfettiFiredRef = useRef(false)
 
@@ -67,8 +81,9 @@ function GameView({ setup, onChangeSetup }: { setup: GameSetup; onChangeSetup: (
   }, [winner])
 
   useEffect(() => {
-    if (!seriesOver || !seriesWinner || seriesConfettiFiredRef.current) return
+    if (!seriesOver || seriesConfettiFiredRef.current) return
     seriesConfettiFiredRef.current = true
+    if (!seriesWinner) return
     const { fire, remove } = createConfetti()
     if (!fire) {
       remove()
@@ -85,10 +100,12 @@ function GameView({ setup, onChangeSetup }: { setup: GameSetup; onChangeSetup: (
   }, [seriesOver, seriesWinner])
 
   return (
-    <main className="min-h-screen bg-slate-800 flex flex-col items-center justify-center p-4">
-      <h1 className="text-4xl font-bold text-white mb-8">Tic Tac Toe</h1>
-      <div className="relative bg-white rounded-2xl shadow-2xl p-4 sm:p-8 w-full max-w-md flex flex-col gap-4">
-        <p className="text-center text-sm font-semibold text-slate-500">
+    <main className="h-screen bg-slate-800 flex flex-col items-center justify-center p-3 sm:p-4 overflow-hidden">
+      <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3 sm:mb-4 flex-shrink-0">
+        Tic Tac Toe
+      </h1>
+      <div className="relative bg-white rounded-2xl shadow-2xl p-4 sm:p-6 w-full max-w-sm sm:max-w-md flex flex-col gap-3">
+        <p className="text-center text-xs font-semibold text-slate-500">
           {setup.player1.name} vs {setup.player2.name}
         </p>
         <hr className="border-slate-200" />
@@ -103,11 +120,12 @@ function GameView({ setup, onChangeSetup }: { setup: GameSetup; onChangeSetup: (
           />
         </div>
         <hr className="border-slate-200" />
-        <ScoreBoard scores={scores} setup={setup} />
+        <ScoreBoard scores={scores} setup={setup} gamesPlayed={gamesPlayed} />
         <GameControls
-          onNewGame={startNewGame}
-          onResetScores={resetScores}
-          onChangeSetup={onChangeSetup}
+          onNextGame={startNewGame}
+          onFinishSeries={() => setForcedSeriesEnd(true)}
+          gameEnded={gameEnded}
+          isSeriesComplete={isSeriesComplete}
         />
         {seriesOver && (
           <div
@@ -121,23 +139,33 @@ function GameView({ setup, onChangeSetup }: { setup: GameSetup; onChangeSetup: (
                 <>
                   <p className="text-3xl">🏆</p>
                   <p className="text-xl font-bold text-slate-800">
-                    <span>{seriesWinner}</span> wins the series!
-                  </p>
-                  <p className="text-sm text-slate-500">
-                    Won {Math.max(record.X, record.O)} of {totalGames} games
+                    {seriesWinner} wins the series!
                   </p>
                 </>
               ) : (
                 <>
                   <p className="text-3xl">🤝</p>
-                  <p className="text-xl font-bold text-slate-800">All square!</p>
-                  <p className="text-sm text-slate-500">
-                    {totalGames} games played, nobody blinked
-                  </p>
+                  <p className="text-xl font-bold text-slate-800">It&apos;s a draw!</p>
                 </>
               )}
+              {totalGames > 0 && (
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div className="bg-blue-50 rounded-xl p-2">
+                    <p className="font-semibold text-slate-700 truncate">{setup.player1.name}</p>
+                    <p className="text-blue-700 font-bold">
+                      {playerSummary(record.X, record.draw, totalGames)}
+                    </p>
+                  </div>
+                  <div className="bg-red-50 rounded-xl p-2">
+                    <p className="font-semibold text-slate-700 truncate">{setup.player2.name}</p>
+                    <p className="text-red-700 font-bold">
+                      {playerSummary(record.O, record.draw, totalGames)}
+                    </p>
+                  </div>
+                </div>
+              )}
               <button
-                onClick={onChangeSetup}
+                onClick={onNewSeries}
                 className="w-full py-2.5 rounded-xl text-sm font-bold bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 outline-none"
               >
                 New Series
@@ -158,7 +186,7 @@ function App() {
     setSetup(newSetup)
   }
 
-  function handleChangeSetup() {
+  function handleNewSeries() {
     clearSetup()
     saveScores(defaultScores())
     setSetup(null)
@@ -168,7 +196,7 @@ function App() {
     return <SetupScreen onStart={handleStart} />
   }
 
-  return <GameView setup={setup} onChangeSetup={handleChangeSetup} />
+  return <GameView setup={setup} onNewSeries={handleNewSeries} />
 }
 
 export default App
