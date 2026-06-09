@@ -135,7 +135,12 @@ function GameView({ setup, onNewSeries }: { setup: GameSetup; onNewSeries: () =>
             className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-2xl z-10"
           >
             <div className="bg-white rounded-2xl p-6 mx-4 text-center flex flex-col gap-4 shadow-2xl">
-              {seriesWinner ? (
+              {totalGames === 0 ? (
+                <>
+                  <p className="text-3xl">🎮</p>
+                  <p className="text-xl font-bold text-slate-800">No games played yet</p>
+                </>
+              ) : seriesWinner ? (
                 <>
                   <p className="text-3xl">🏆</p>
                   <p className="text-xl font-bold text-slate-800">
