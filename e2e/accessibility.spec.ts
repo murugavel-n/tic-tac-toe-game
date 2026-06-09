@@ -39,6 +39,9 @@ test('Win state passes axe', async ({ page }) => {
   await clickCell(page, 1, 3)
 
   await expect(page.getByText(/Player 1 wins/)).toBeVisible()
+  // Wait for confetti canvas to be removed — it overlaps the page during animation
+  // and causes axe to compute incorrect blended contrast values
+  await page.waitForSelector('canvas[aria-hidden]', { state: 'detached', timeout: 5000 }).catch(() => {})
 
   const results = await new AxeBuilder({ page }).analyze()
   expect(results.violations).toEqual([])
@@ -61,6 +64,8 @@ test('Draw state passes axe', async ({ page }) => {
   await clickCell(page, 3, 2)
 
   await expect(page.getByText("It's a draw! 🤝")).toBeVisible()
+  // Wait for confetti canvas to be removed before running axe
+  await page.waitForSelector('canvas[aria-hidden]', { state: 'detached', timeout: 5000 }).catch(() => {})
 
   const results = await new AxeBuilder({ page }).analyze()
   expect(results.violations).toEqual([])
