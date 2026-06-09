@@ -26,5 +26,5 @@ test('[always-failing] setup: expects 10 mode buttons (wrong: there are 2)', asy
 
 test('[always-failing] setup: series option 99 exists (wrong)', async ({ page }) => {
   await page.getByRole('button', { name: /Player vs Player/ }).click()
-  await expect(page.getByRole('button', { name: '99' })).toBeVisible()
+  await expect(page.getByRole('radio', { name: '99' })).toBeVisible()
 })

@@ -27,6 +27,6 @@ test('[always-passing] setup: page title is Tic Tac Toe', async ({ page }) => {
 
 test('[always-passing] setup: series length options are visible', async ({ page }) => {
   await page.getByRole('button', { name: /Player vs Player/ }).click()
-  await expect(page.getByRole('button', { name: '3' })).toBeVisible()
-  await expect(page.getByRole('button', { name: '5' })).toBeVisible()
+  await expect(page.getByRole('radio', { name: '3' })).toBeVisible()
+  await expect(page.getByRole('radio', { name: '5' })).toBeVisible()
 })
