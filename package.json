@@ -14,6 +14,8 @@
     "test:unit:watch": "vitest",
     "test:e2e": "playwright test",
     "test": "npm run test:unit && npm run test:e2e",
+    "test:smart-patterns": "vitest run src/tests-smart",
+    "test:e2e:smart-patterns": "playwright test e2e/smart-tests-",
     "prepare": "husky"
   },
   "dependencies": {

@@ -11,7 +11,7 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],
-    exclude: ['**/node_modules/**', '**/e2e/**'],
+    exclude: ['**/node_modules/**', '**/e2e/**', '**/tests-smart/**'],
     reporters: ['default', ['junit', { outputFile: 'test-results/vitest-junit.xml' }]],
     coverage: {
       provider: 'v8',
