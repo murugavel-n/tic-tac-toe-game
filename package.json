@@ -15,7 +15,7 @@
     "test:e2e": "playwright test",
     "test": "npm run test:unit && npm run test:e2e",
     "test:smart-patterns": "vitest run --config vitest.smart-patterns.config.ts",
-    "test:e2e:smart-patterns": "playwright test e2e/smart-tests",
+    "test:e2e:smart-patterns": "playwright test --config playwright.smart-patterns.config.ts",
     "prepare": "husky"
   },
   "dependencies": {
