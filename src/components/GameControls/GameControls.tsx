@@ -34,7 +34,7 @@ export function GameControls({
       <button
         onClick={onNextGame}
         aria-label="Start next game"
-        className="w-full py-2 px-3 sm:px-4 rounded-lg text-xs sm:text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 outline-none"
+        className="w-full py-2 px-3 sm:px-4 rounded-lg text-xs sm:text-sm font-semibold bg-indigo-700 text-white hover:bg-indigo-800 active:bg-indigo-900 transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 outline-none"
       >
         Next Game
       </button>
