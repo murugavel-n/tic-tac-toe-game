@@ -6,7 +6,7 @@ import {
   isDraw as checkDraw,
   getComputerMove,
 } from '../utils/gameLogic'
-import { Scores, GameSetup, loadScores, saveScores, defaultScores } from '../utils/storage'
+import { Scores, GameSetup, loadScores, saveScores } from '../utils/storage'
 
 export interface UseGameReturn {
   board: Board
@@ -15,9 +15,9 @@ export interface UseGameReturn {
   isDraw: boolean
   scores: Scores
   setup: GameSetup
+  gamesPlayed: number
   handleCellClick: (index: number) => void
   startNewGame: () => void
-  resetScores: () => void
 }
 
 function updateScores(
@@ -50,6 +50,7 @@ export function useGame(setup: GameSetup): UseGameReturn {
   const [winner, setWinner] = useState<Player | null>(null)
   const [isDraw, setIsDraw] = useState(false)
   const [scores, setScores] = useState<Scores>(() => loadScores())
+  const [gamesPlayed, setGamesPlayed] = useState(0)
 
   const handleCellClick = useCallback(
     (index: number) => {
@@ -72,6 +73,7 @@ export function useGame(setup: GameSetup): UseGameReturn {
 
       if (winResult) {
         setWinner(winResult.winner)
+        setGamesPlayed((prev) => prev + 1)
         setScores((prev) => {
           const updated = updateScores(prev, winResult.winner, false, setup)
           saveScores(updated)
@@ -79,6 +81,7 @@ export function useGame(setup: GameSetup): UseGameReturn {
         })
       } else if (drawResult) {
         setIsDraw(true)
+        setGamesPlayed((prev) => prev + 1)
         setScores((prev) => {
           const updated = updateScores(prev, null, true, setup)
           saveScores(updated)
@@ -111,6 +114,7 @@ export function useGame(setup: GameSetup): UseGameReturn {
 
       if (winResult) {
         setWinner(winResult.winner)
+        setGamesPlayed((prev) => prev + 1)
         setScores((prev) => {
           const updated = updateScores(prev, winResult.winner, false, setup)
           saveScores(updated)
@@ -118,6 +122,7 @@ export function useGame(setup: GameSetup): UseGameReturn {
         })
       } else if (drawResult) {
         setIsDraw(true)
+        setGamesPlayed((prev) => prev + 1)
         setScores((prev) => {
           const updated = updateScores(prev, null, true, setup)
           saveScores(updated)
@@ -138,12 +143,6 @@ export function useGame(setup: GameSetup): UseGameReturn {
     setIsDraw(false)
   }, [])
 
-  const resetScores = useCallback(() => {
-    const zeroed = defaultScores()
-    setScores(zeroed)
-    saveScores(zeroed)
-  }, [])
-
   return {
     board,
     currentPlayer,
@@ -151,8 +150,8 @@ export function useGame(setup: GameSetup): UseGameReturn {
     isDraw,
     scores,
     setup,
+    gamesPlayed,
     handleCellClick,
     startNewGame,
-    resetScores,
   }
 }

@@ -14,7 +14,7 @@ export function Cell({ value, index, isWinning, onClick, disabled, p1Symbol }: C
   const ariaLabel = `Row ${row}, Column ${col}, ${value ?? 'empty'}`
 
   const baseClasses =
-    'w-20 h-20 sm:w-24 sm:h-24 border-2 rounded-lg text-3xl sm:text-4xl font-bold flex items-center justify-center transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 outline-none'
+    'w-24 h-24 sm:w-28 sm:h-28 border-2 rounded-xl text-4xl sm:text-5xl font-bold flex items-center justify-center transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 outline-none'
 
   const stateClasses = isWinning
     ? 'bg-yellow-200 border-yellow-400'

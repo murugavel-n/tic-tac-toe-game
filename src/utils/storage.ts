@@ -20,6 +20,7 @@ export interface GameSetup {
   mode: 'pvp' | 'pva'
   player1: PlayerSetup
   player2: PlayerSetup
+  seriesLength: number
 }
 
 export function defaultScores(): Scores {
